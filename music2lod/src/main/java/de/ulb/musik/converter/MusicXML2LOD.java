@@ -2,6 +2,7 @@ package de.ulb.musik.converter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import javax.xml.parsers.DocumentBuilder;
@@ -36,12 +37,132 @@ public class MusicXML2LOD {
 	public static void main(String[] args) {
 
 		MusicXML2LOD instance = new MusicXML2LOD();
-		instance.printScoreDetails(instance.parseMusicXML("scores/xmlsamples/MozaVeilSample.xml"));
+		//instance.printScoreDetails(instance.parseMusicXML("scores/xmlsamples/MozaVeilSample.xml"));
 		//instance.printScoreDetails(t.parseMusicXML("scores/xmlsamples/DebuMandSample.xml"));
 		
-
+		Score score = instance.parseMusicXML("scores/xmlsamples/DebuMandSample.xml");
+		instance.convertScoreToTTL(score);
+		
 	}
 
+	private String convertScoreToTTL(Score score){
+		
+		StringBuffer ttl = new StringBuffer();
+		
+		String scoreSubject = "<http://musik.uni-muenster.de/scores/score1>"; 
+		
+		ttl.append(scoreSubject + " a <http://musik.uni-muenster.de/linkedmusic#Score> .\n");
+		
+		
+		
+		for (int i = 0; i < score.getParts().size(); i++) {
+			
+			String part = "_:PART_"+score.getParts().get(i).getId();
+			
+			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasPart> " +part + ".\n" );
+			
+			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
+				
+				String measure = "_:MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId();
+				ttl.append(part + " <http://musik.uni-muenster.de/linkedmusic#hasMeasure> " + measure + " .\n");
+
+				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getDirection().size(); k++) {
+
+					String direction = "_:DIRECTION_"+score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k;
+					
+					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasDirection> " + direction + " .\n");
+					
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().size(); l++) {
+
+						ttl.append(direction + " a <http://musik.uni-muenster.de/linkedmusic#" +  score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() +"> .\n" );
+
+					}
+
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().size(); l++) {
+
+						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasInstruction> \"" + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().get(l).getWordText()  + "\". \n");
+
+					}
+					
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().size(); l++) {
+						
+						
+						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
+						wedge = wedge.substring(0, 1).toUpperCase() + wedge.substring(1);
+						
+						ttl.append(direction + " a <http://musik.uni-muenster.de/linkedmusic#" + wedge  +"> .\n" );
+
+					}
+
+				}
+
+
+				if(score.getParts().get(i).getMeasures().get(j).getClef().getSign()!=null){
+/*
+					System.out.println("----Clef Line: " + score.getParts().get(i).getMeasures().get(j).getClef().getLine());
+					System.out.println("----Clef Sign: " + score.getParts().get(i).getMeasures().get(j).getClef().getSign());
+					System.out.println("----Divisions: " + score.getParts().get(i).getMeasures().get(j).getDivisions());
+					System.out.println("----Key Fifths: " + score.getParts().get(i).getMeasures().get(j).getKey().getFifths());
+					System.out.println("----Key Mode: " + score.getParts().get(i).getMeasures().get(j).getKey().getMode());
+					System.out.println("----Time Beats: " + score.getParts().get(i).getMeasures().get(j).getTime().getBeats());
+					System.out.println("----Time Beat-Type: " + score.getParts().get(i).getMeasures().get(j).getTime().getBeatType());
+
+*/
+
+
+				}
+
+				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getNotes().size(); k++) {
+
+/*					
+					System.out.println("------Note "+ (k+1) +" Pitch (Step): " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getPitch().getStep());
+					System.out.println("------Note "+ (k+1) +" Pitch (Octave): " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getPitch().getOctave());
+					System.out.println("------Note "+ (k+1) +" Duration: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getDuration());
+					System.out.println("------Note "+ (k+1) +" Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getType());
+					System.out.println("------Note "+ (k+1) +" Voice: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getVoice());
+					System.out.println("------Note "+ (k+1) +" Stem: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getStem());
+					System.out.println("------Note "+ (k+1) +" Staff: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getStaff());
+					System.out.println("------Note "+ (k+1) +" Accidental: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getAccidental());
+*/					
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().size(); l++) {
+
+/*						
+						System.out.println("------Note "+ (k+1) +" Beam Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getNumber());
+						System.out.println("------Note "+ (k+1) +" Beam Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getType());
+*/
+					}
+/*
+					System.out.println("------Note "+ (k+1) +" Syllabic: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getSyllabic());
+					System.out.println("------Note "+ (k+1) +" Text: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getText());
+*/					
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().size(); l++) {
+/*
+						System.out.println("------Note "+ (k+1) +" Slur Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getNumber());
+						System.out.println("------Note "+ (k+1) +" Slur Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getType());
+*/
+					}
+
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getArticulation().size(); l++) {
+
+						//System.out.println("------Note "+ (k+1) +" Articulation Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getArticulation().get(l).getType());					
+
+					}
+					
+				}
+
+			}
+
+		}
+		
+		
+		
+		System.out.println(ttl.toString());
+		
+		
+		return "";
+	}
+	
+	
 	private void printScoreDetails(Score score){
 
 		for (int i = 0; i < score.getParts().size(); i++) {
