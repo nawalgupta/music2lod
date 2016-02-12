@@ -36,10 +36,8 @@ public class MusicXML2LOD {
 	public static void main(String[] args) {
 
 		MusicXML2LOD instance = new MusicXML2LOD();
-		//t.parseMusicXML("/home/jones/Dropbox/ifgi/PhD/MusicVocabulary/xml/small_example.xml");
- 
 		instance.printScoreDetails(instance.parseMusicXML("scores/xmlsamples/MozaVeilSample.xml"));
-		//t.printScoreDetails(t.parseMusicXML("data/xmlsamples/DebuMandSample.xml"));
+		//instance.printScoreDetails(t.parseMusicXML("scores/xmlsamples/DebuMandSample.xml"));
 		
 
 	}
