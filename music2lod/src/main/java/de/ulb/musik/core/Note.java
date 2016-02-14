@@ -15,6 +15,7 @@ public class Note {
 	int voice;
 	String stem;
 	int staff;
+	boolean chord;
 	
 	public Note() {
 		
@@ -23,7 +24,7 @@ public class Note {
 		this.lyric = new Lyric();
 		this.notation = new Notation();
 		this.beam = new ArrayList<Beam>();
-		
+		chord = false;
 	}
 
 	
@@ -96,6 +97,16 @@ public class Note {
 
 	public void setAccidental(String accidental) {
 		this.accidental = accidental;
+	}
+
+
+	public boolean isChord() {
+		return chord;
+	}
+
+
+	public void setChord(boolean chord) {
+		this.chord = chord;
 	}
 
 	

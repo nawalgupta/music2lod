@@ -169,8 +169,12 @@ public class MusicXML2LOD {
 
 				}
 
+				int chordAnchor = 0;
+				String chordAnchorObj="";
+				boolean isAnchor = false;
+				
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getNotes().size(); k++) {
-
+										
 					String note = "_:NOTE_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k;
 					String noteType = getCapital(score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getType());
 					int noteVoice = score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getVoice();
@@ -178,6 +182,29 @@ public class MusicXML2LOD {
 					String noteStem = score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getStem(); 
 					int noteStaff = score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getStaff();
 					
+					
+					//TODO: correct triple redundancy (Chord type and anchor are being duplicated)  
+					
+					if(!score.getParts().get(i).getMeasures().get(j).getNotes().get(k).isChord()){
+						
+						chordAnchor = k;
+						chordAnchorObj = note;
+						
+					} else {
+						
+						String chord = "_:CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor; 
+						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + note + " . \n" );
+				
+					
+						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + chordAnchorObj + " . \n");
+						ttl.append(chord + " a <http://musik.uni-muenster.de/linkedmusic#Chord> . \n");
+
+						}
+					}
+					
+					
+					
+
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + note + " . \n");
 					ttl.append(note + " a <http://musik.uni-muenster.de/linkedmusic#" + noteType + "> . \n");
 					ttl.append(note + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + noteVoice + "\" . \n");					
@@ -522,11 +549,6 @@ public class MusicXML2LOD {
 						if(nodesMeasuresClefLine.getLength()!=0) measure.getClef().setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
 
 
-
-
-
-
-
 						/**
 						 * Adding loaded measures.
 						 */
@@ -547,12 +569,12 @@ public class MusicXML2LOD {
 
 
 						/**
-						 * Loading Notes of a single measure
+						 * Loading all Notes of a single measure
 						 */
 
 						NodeList nodeNotes = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']/note", document,XPathConstants.NODESET);
 
-
+						
 						if (nodeNotes.getLength() != 0) {
 
 
@@ -598,6 +620,18 @@ public class MusicXML2LOD {
 
 									note.setDuration(Integer.parseInt(elementNotes.getElementsByTagName("duration").item(0).getTextContent()));
 
+								}
+								
+								
+								/**
+								 * Loading Note Chord Flag
+								 */
+
+
+								if(elementNotes.getElementsByTagName("chord").item(0)!=null){
+
+									note.setChord(true);
+									
 								}
 
 								/**
