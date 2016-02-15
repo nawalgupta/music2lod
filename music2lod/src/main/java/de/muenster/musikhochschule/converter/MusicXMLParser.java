@@ -46,8 +46,9 @@ public class MusicXMLParser {
 
 	public static void main(String[] args) {
 
-		File musicXMLfile = new File("scores/xmlsamples/DebuMandSample.xml");		
-
+		//File musicXMLfile = new File("scores/xmlsamples/DebuMandSample.xml");		
+		File musicXMLfile = new File("scores/xmlsamples/SchbAvMaSample.xml");
+		
 		MusicXMLParser instance = new MusicXMLParser();
 		instance.loadMusicXML(musicXMLfile);
 
@@ -415,8 +416,6 @@ public class MusicXMLParser {
 
 		try {
 
-			//File file = this.getInputFile();//new File(this.inputFile);
-
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(triples);
 
@@ -431,7 +430,7 @@ public class MusicXMLParser {
 			}
 
 
-			FileOutputStream fileStream = new FileOutputStream(new File(this.getOutputFolder() + this.getInputFile().separator + fileName +".nt"),true);
+			FileOutputStream fileStream = new FileOutputStream(new File(this.getOutputFolder() + this.getInputFile().separator + fileName +".nt"),false);
 			OutputStreamWriter writer = new OutputStreamWriter(fileStream, "UTF8");
 
 			writer.append(buffer.toString());

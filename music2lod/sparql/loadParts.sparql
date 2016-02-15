@@ -1,0 +1,28 @@
+
+SELECT ?measure ?measureID ?staff ?note ?noteClass ?stepClass ?accidentalType ?octave ?chord 
+WHERE { 
+	
+	GRAPH ?graph {
+
+		?part <http://musik.uni-muenster.de/linkedmusic#hasMeasure> ?measure .
+		?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .
+		?measure <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?measureID .
+		?measure <http://musik.uni-muenster.de/linkedmusic#hasNote> ?note .
+		?note <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?noteID .
+		?note a ?noteClass .
+		?noteClass <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://musik.uni-muenster.de/linkedmusic#Note> .
+		?note <http://musik.uni-muenster.de/linkedmusic#hasPitch> ?pitch .
+		?note <http://musik.uni-muenster.de/linkedmusic#hasStaff> ?staff .
+
+		OPTIONAL{?pitch <http://musik.uni-muenster.de/linkedmusic#hasStep> ?step .
+		?step a ?stepClass .
+		?stepClass <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://musik.uni-muenster.de/linkedmusic#Step> .}
+
+		?pitch <http://musik.uni-muenster.de/linkedmusic#hasOctave> ?octave .
+		OPTIONAL {?note <http://musik.uni-muenster.de/linkedmusic#isNoteOf> ?chord . ?chord a <http://musik.uni-muenster.de/linkedmusic#Chord> . }
+		OPTIONAL {?note <http://musik.uni-muenster.de/linkedmusic#hasAccidental> ?accidental . ?accidental a ?accidentalType } .
+
+		}
+	}
+
+ORDER BY ?measureID ?noteID
