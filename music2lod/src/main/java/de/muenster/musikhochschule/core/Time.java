@@ -1,4 +1,4 @@
-package de.ulb.musik.core;
+package de.muenster.musikhochschule.core;
 
 public class Time {
 
