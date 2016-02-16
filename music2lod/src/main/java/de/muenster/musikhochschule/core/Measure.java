@@ -7,7 +7,7 @@ public class Measure {
 	String id;	
 	int divisions;
 	Key key;
-	Time time;
+	TimeSignature time;
 	Clef clef;
 	ArrayList<Direction> direction;
 	ArrayList<Note> notes;
@@ -17,7 +17,7 @@ public class Measure {
 
 		this.notes = new ArrayList<Note>();
 		this.key = new Key();
-		this.time = new Time();
+		this.time = new TimeSignature();
 		this.clef = new Clef();
 		this.direction = new ArrayList<Direction>();
 	}
@@ -57,7 +57,7 @@ public class Measure {
 
 
 
-	public Time getTime() {
+	public TimeSignature getTime() {
 		return time;
 	}
 

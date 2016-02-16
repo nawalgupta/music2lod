@@ -44,21 +44,6 @@ public class MusicXMLParser {
 	private boolean verbose;
 	private Score score;
 
-	public static void main(String[] args) {
-
-		//File musicXMLfile = new File("scores/xmlsamples/DebuMandSample.xml");		
-		File musicXMLfile = new File("scores/xmlsamples/SchbAvMaSample.xml");
-		
-		MusicXMLParser instance = new MusicXMLParser();
-		instance.loadMusicXML(musicXMLfile);
-
-		instance.setOutputFolder("nt/");
-		//instance.printScoreDetails();
-		instance.saveAsNTriples();
-
-	}
-
-
 	public MusicXMLParser() {
 		super();
 
@@ -67,7 +52,7 @@ public class MusicXMLParser {
 
 	}
 
-	public String saveAsNTriples(){
+	public String exportAsNTriples(){
 
 		Score score = this.getScore();
 
@@ -1124,7 +1109,7 @@ public class MusicXMLParser {
 		return outputFolder;
 	}
 
-	public void setOutputFolder(String outputFile) {
+	public void setExportFolder(String outputFile) {
 		this.outputFolder = outputFile;
 	}
 

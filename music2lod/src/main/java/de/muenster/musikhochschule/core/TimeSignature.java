@@ -1,17 +1,17 @@
 package de.muenster.musikhochschule.core;
 
-public class Time {
+public class TimeSignature {
 
 	int beats;
 	int beatType;
 			
-	public Time() {
+	public TimeSignature() {
 
 		super();
 
 	}
 
-	public Time(int beats, int beatType) {
+	public TimeSignature(int beats, int beatType) {
 		super();
 		this.beats = beats;
 		this.beatType = beatType;
