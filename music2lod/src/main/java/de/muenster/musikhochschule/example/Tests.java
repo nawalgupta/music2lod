@@ -10,7 +10,7 @@ public class Tests {
 	public static void main(String[] args) {
 
 		MusicXMLParser parser = new MusicXMLParser();
-		parser.loadMusicXML(new File("scores/xmlsamples/SchbAvMaSample.xml"));
+		parser.loadMusicXML(new File("scores/xmlsamples/BeetAnGeSample.xml"));
 
 		parser.setExportFolder("nt/");
 		parser.setVerbose(true);

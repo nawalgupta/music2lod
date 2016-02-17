@@ -45,7 +45,7 @@ public class Measure {
 
 
 
-	public ArrayList<Note> getNotes() {
+	public ArrayList<Note> getRhythmic() {
 		return notes;
 	}
 
