@@ -3,20 +3,18 @@ package de.muenster.musikhochschule.core;
 import java.util.ArrayList;
 
 public class Score {
-
-	PartList partList;
-	ArrayList<Part> parts;
-	String version;
-	ArrayList<Identification> identification;
-	String rights;
+	
+	
+	private ArrayList<Part> parts;
+	private String version;
+	private Identification identification;
+	private String rights;
 	
 	public Score() {
 		super();
 		
-		this.partList = new PartList();
 		this.parts = new ArrayList<Part>();
-		this.identification = new ArrayList<Identification>();
-		
+				
 	}
 
 	public String getVersion() {
@@ -27,18 +25,18 @@ public class Score {
 		this.version = version;
 	}
 
-	public PartList getPartList() {
-		return partList;
-	}
-
 	public ArrayList<Part> getParts() {
 		
 		return parts;
 		
 	}
 
-	public ArrayList<Identification> getIdentification() {
+	public Identification getIdentification() {
 		return identification;
+	}
+
+	public void setIdentification(Identification identification) {
+		this.identification = identification;
 	}
 
 	public String getRights() {
@@ -49,8 +47,7 @@ public class Score {
 		this.rights = rights;
 	}
 
-		
-	
+
 	
 	
 }

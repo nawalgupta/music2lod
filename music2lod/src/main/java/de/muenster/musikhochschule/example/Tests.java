@@ -13,7 +13,7 @@ public class Tests {
 		parser.loadMusicXML(new File("scores/xmlsamples/BeetAnGeSample.xml"));
 
 		parser.setExportFolder("nt/");
-		parser.setVerbose(true);
+		parser.setVerbose(false);
 
 		parser.exportAsNTriples();
 

@@ -1,31 +1,47 @@
 package de.muenster.musikhochschule.core;
 
+import java.util.ArrayList;
+
 public class Identification {
 
-	String creator;
-	String creatorType;
-	
+	private String workTitle;
+	private String workNumber;
+	private ArrayList<Creator> creators; 
 	
 	public Identification() {
 
 		super();
-
+		this.creators = new ArrayList<Creator>();
 	}
 
-	public String getCreator() {
-		return creator;
+	
+	
+	public String getWorkTitle() {
+		return workTitle;
 	}
 
-	public void setCreator(String creator) {
-		this.creator = creator;
+
+
+	public void setWorkTitle(String work) {
+		this.workTitle = work;
 	}
 
-	public String getCreatorType() {
-		return creatorType;
+
+
+	public String getWorkNumber() {
+		return workNumber;
 	}
 
-	public void setCreatorType(String creatorType) {
-		this.creatorType = creatorType;
+
+
+	public void setWorkNumber(String workNumber) {
+		this.workNumber = workNumber;
+	}
+
+
+
+	public ArrayList<Creator> getCreators() {
+		return creators;
 	}
 
 	

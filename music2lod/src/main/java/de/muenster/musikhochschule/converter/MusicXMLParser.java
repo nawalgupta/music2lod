@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 
 import de.muenster.musikhochschule.core.Articulation;
 import de.muenster.musikhochschule.core.Beam;
+import de.muenster.musikhochschule.core.Creator;
 import de.muenster.musikhochschule.core.Direction;
 import de.muenster.musikhochschule.core.Dynamic;
 import de.muenster.musikhochschule.core.Identification;
@@ -56,21 +57,44 @@ public class MusicXMLParser {
 
 		Score score = this.getScore();
 		String rdfTypeURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ";
+		String rdfLabelURI = " <http://www.w3.org/2000/01/rdf-schema#label> ";
 		
-		System.out.println("Generating N-Triples for [" + this.inputFile + "] ...");
+		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
 
 		UUID scoreID = UUID.randomUUID();
 
 		StringBuffer ttl = new StringBuffer();		
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
+		
+		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
+		//ttl.append(scoreSubject + " <http://purl.org/ontology/mo/opus> \"" + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+		
+		for (int i = 0; i < score.getIdentification().getCreators().size(); i++) {
+			
+			String person = "<http://musik.uni-muenster.de/persons/PERSON_"+score.getIdentification().getCreators().get(i).getName().hashCode()+"> ";
+			
+			if(score.getIdentification().getCreators().get(i).getType().toLowerCase().equals("composer")){
+				ttl.append(person + " <http://dbpedia.org/property/occupation> <http://dbpedia.org/resource/Composer> .\n");
+			}
 
-		ttl.append(scoreSubject + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Score> .\n");
+			if(score.getIdentification().getCreators().get(i).getType().toLowerCase().equals("lyricist")){
+				ttl.append(person + " <http://dbpedia.org/property/occupation> <http://dbpedia.org/resource/Lyricist> .\n");
+			}
 
+			
+			ttl.append(scoreSubject + " <http://dbpedia.org/ontology/composer> " + person + " .\n");
+			ttl.append(person + rdfTypeURI +" <http://xmlns.com/foaf/0.1/Person> .\n");
+			ttl.append(person + " <http://xmlns.com/foaf/0.1/name> \"" + score.getIdentification().getCreators().get(i).getName() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+			
+		}
+		
 		for (int i = 0; i < score.getParts().size(); i++) {
 
 			String part = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
-
-			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasPart> " +part + ".\n" );
+			
+			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasPart> " + part + ".\n" );
+			ttl.append(part + rdfLabelURI + "\"" +score.getParts().get(i).getName() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
 			ttl.append(part + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> \"" + score.getParts().get(i).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#string> . \n" );
 
 			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
@@ -99,7 +123,6 @@ public class MusicXMLParser {
 					}
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().size(); l++) {
-
 
 						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
 						wedge = wedge.substring(0, 1).toUpperCase() + wedge.substring(1);
@@ -179,7 +202,12 @@ public class MusicXMLParser {
 						clefType = "<http://musik.uni-muenster.de/linkedmusic#Trebble>";
 
 					}
-
+					
+					if (score.getParts().get(i).getMeasures().get(j).getClef().getSign().toLowerCase().equals("percussion")){
+						
+						clefType = "<http://musik.uni-muenster.de/linkedmusic#Percussion>";
+					}
+					
 					ttl.append(clef + rdfTypeURI + clefType + " . \n");
 
 
@@ -513,10 +541,10 @@ public class MusicXMLParser {
 		}
 
 
-		for (int i = 0; i < score.getIdentification().size(); i++) {
+		for (int i = 0; i < score.getIdentification().getCreators().size(); i++) {
 
-			System.out.println("\nCreator: " + score.getIdentification().get(i).getCreator());
-			System.out.println("Creator Type: " + score.getIdentification().get(i).getCreatorType());
+			System.out.println("\nCreator: " + score.getIdentification().getCreators().get(i).getName());
+			System.out.println("Creator Type: " + score.getIdentification().getCreators().get(i).getType());
 
 		}
 
@@ -602,24 +630,43 @@ public class MusicXMLParser {
 			/**
 			 * Loading Header Info
 			 */
-			NodeList nodeCreator = (NodeList) xpath.evaluate("//score-partwise/identification/creator", document,XPathConstants.NODESET);
+			
+			Identification identification = new Identification();			
+			
+			NodeList nodeIdentification = (NodeList) xpath.evaluate("//score-partwise/identification", document,XPathConstants.NODESET);
 
-			if (nodeCreator.getLength() != 0) {
+			Element elementIdentification = (Element) nodeIdentification.item(0);
+			
+			if (nodeIdentification.getLength() != 0) {
 
-				for (int i = 0; i < nodeCreator.getLength(); i++) {
+				for (int i = 0; i < elementIdentification.getElementsByTagName("creator").getLength(); i++) {
+					
+					Creator creator = new Creator();
+					creator.setName(elementIdentification.getElementsByTagName("creator").item(i).getTextContent());
+					creator.setType(elementIdentification.getElementsByTagName("creator").item(i).getAttributes().getNamedItem("type").getTextContent());
 
-					Identification identification = new Identification();			
-					Element elementCreator = (Element) nodeCreator.item(i);
+					identification.getCreators().add(creator);
+					
+					
+				}
 
-					identification.setCreator(elementCreator.getTextContent());
-					identification.setCreatorType(elementCreator.getAttributes().getNamedItem("type").getTextContent());
+				NodeList nodeWork = (NodeList) xpath.evaluate("//score-partwise/work", document,XPathConstants.NODESET);
 
-					score.getIdentification().add(identification);                                     
+				if (nodeWork.getLength() != 0) {
+			
+					Element elementWork = (Element) nodeWork.item(0);
+					
+					identification.setWorkNumber(elementWork.getElementsByTagName("work-number").item(0).getTextContent());
+					identification.setWorkTitle(elementWork.getElementsByTagName("work-title").item(0).getTextContent());
 
 				}
 
+				
+				score.setIdentification(identification);
+
 			}
 
+			
 
 			NodeList nodeRights = (NodeList) xpath.evaluate("//score-partwise/identification/rights", document,XPathConstants.NODESET);
 
@@ -644,13 +691,25 @@ public class MusicXMLParser {
 					Node currentItem = subfields.item(i);   
 					Part part = new Part();
 					part.setId(currentItem.getTextContent());
-
+				
+					NodeList nodePartName = (NodeList) xpath.evaluate("//score-partwise/part-list/score-part[@id='"+part.getId()+"']", document,XPathConstants.NODESET);
+					
+					if (nodePartName.getLength() != 0) {
+					
+						Element elementNotes = (Element) nodePartName.item(0);
+						part.setName(elementNotes.getElementsByTagName("part-name").item(0).getTextContent());
+						
+						
+					}
+					
 					score.getParts().add(part);
-
+					
 				}
 
 			}
 
+		
+			//TODO: add instrument name
 
 			/**
 			 * Loading measures 
