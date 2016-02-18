@@ -94,7 +94,8 @@ public class MusicXMLParser {
 		for (int i = 0; i < score.getParts().size(); i++) {
 
 			String part = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
-			
+			String partID = score.getParts().get(i).getId();
+					
 			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasScorePart> " + part + ".\n" );
 			ttl.append(part + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#ScorePart> .\n" );
 			ttl.append(part + rdfLabelURI + "\"" +score.getParts().get(i).getName().replaceAll("[\n\r]", " ") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
@@ -103,7 +104,8 @@ public class MusicXMLParser {
 			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
 
 				String measure = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId() + ">";
-
+				String measureID = score.getParts().get(i).getMeasures().get(j).getId();
+				
 				ttl.append(part + " <http://musik.uni-muenster.de/linkedmusic#hasMeasure> " + measure + " .\n");
 				ttl.append(measure + rdfIdURI + "\"" + score.getParts().get(i).getMeasures().get(j).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 
@@ -329,12 +331,12 @@ public class MusicXMLParser {
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
 
-					String rhythmic = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
+					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
-					String rhythmicStem = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStem(); 
-					int rhythmicStaff = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
+					//String rhythmicStem = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStem(); 
+					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
 
 
 					//TODO: correct triple redundancy (Chord type and anchor are being duplicated)  
@@ -346,7 +348,7 @@ public class MusicXMLParser {
 
 					} else {
 
-						String chord = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
+						String chord = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
 						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmic + " . \n" );
 
 
@@ -369,9 +371,11 @@ public class MusicXMLParser {
 						
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + rhythmicVoice + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");					
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
-						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStem> \"" + rhythmicStem + "\" .\n");
-						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStaff> \"" + rhythmicStaff + "\" .\n");
-	
+						//ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStem> \"" + rhythmicStem + "\" .\n");
+						String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_P" + partID  +"_S"+ score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff() +">";
+						
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#belongsToStaff> "+ staff+ " . \n");
+						ttl.append(staff + rdfTypeURI + "<http://musik.uni-muenster.de/linkedmusic#Staff> . \n");
 	
 						String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_N" + k + ">";
 						int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
@@ -603,7 +607,7 @@ public class MusicXMLParser {
 				@Override
 				public InputSource resolveEntity(String publicId, String systemId)
 						throws SAXException, IOException {
-					System.out.println("Ignoring " + publicId + ", " + systemId);
+					//System.out.println("Ignoring " + publicId + ", " + systemId);
 					return new InputSource(new StringReader(""));
 				}
 			});
@@ -624,7 +628,7 @@ public class MusicXMLParser {
 				score.setVersion(currentItem.getTextContent());                                     
 			}
 
-			System.out.println("MusicXML Version: " + score.getVersion());
+			//System.out.println("MusicXML Version: " + score.getVersion());
 
 			/**
 			 * Loading Header Info
@@ -651,12 +655,13 @@ public class MusicXMLParser {
 
 				NodeList nodeWork = (NodeList) xpath.evaluate("//score-partwise/work", document,XPathConstants.NODESET);
 
-				if (nodeWork.getLength() != 0) {
-			
+				if (nodeWork.getLength() != 0 && nodeWork != null) {
+					
+					System.out.println(nodeWork.getLength());
 					Element elementWork = (Element) nodeWork.item(0);
 					
-					identification.setWorkNumber(elementWork.getElementsByTagName("work-number").item(0).getTextContent());
-					identification.setWorkTitle(elementWork.getElementsByTagName("work-title").item(0).getTextContent());
+					if(elementWork.getElementsByTagName("work-number").item(0)!=null)identification.setWorkNumber(elementWork.getElementsByTagName("work-number").item(0).getTextContent());					
+					if(elementWork.getElementsByTagName("work-title").item(0)!=null)identification.setWorkTitle(elementWork.getElementsByTagName("work-title").item(0).getTextContent());
 
 				}
 
