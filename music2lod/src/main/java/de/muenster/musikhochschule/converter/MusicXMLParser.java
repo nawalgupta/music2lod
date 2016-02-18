@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,7 +22,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 import de.muenster.musikhochschule.core.Articulation;
 import de.muenster.musikhochschule.core.Beam;
 import de.muenster.musikhochschule.core.Creator;
@@ -58,6 +56,7 @@ public class MusicXMLParser {
 		Score score = this.getScore();
 		String rdfTypeURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ";
 		String rdfLabelURI = " <http://www.w3.org/2000/01/rdf-schema#label> ";
+		String rdfIdURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ";
 		
 		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
 
@@ -67,12 +66,11 @@ public class MusicXMLParser {
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
 		
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
-		//ttl.append(scoreSubject + " <http://purl.org/ontology/mo/opus> \"" + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
-		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
 		
 		for (int i = 0; i < score.getIdentification().getCreators().size(); i++) {
 			
-			String person = "<http://musik.uni-muenster.de/persons/PERSON_"+score.getIdentification().getCreators().get(i).getName().hashCode()+"> ";
+			String person = "<http://musik.uni-muenster.de/persons/PERSON_"+score.getIdentification().getCreators().get(i).getName().toLowerCase().hashCode()+"> ";
 			
 			if(score.getIdentification().getCreators().get(i).getType().toLowerCase().equals("composer")){
 				ttl.append(person + " <http://dbpedia.org/property/occupation> <http://dbpedia.org/resource/Composer> .\n");
@@ -80,6 +78,10 @@ public class MusicXMLParser {
 
 			if(score.getIdentification().getCreators().get(i).getType().toLowerCase().equals("lyricist")){
 				ttl.append(person + " <http://dbpedia.org/property/occupation> <http://dbpedia.org/resource/Lyricist> .\n");
+			}
+
+			if(score.getIdentification().getCreators().get(i).getType().toLowerCase().equals("arranger")){
+				ttl.append(person + " <http://dbpedia.org/property/occupation> <http://dbpedia.org/resource/Arranger> .\n");
 			}
 
 			
@@ -93,27 +95,27 @@ public class MusicXMLParser {
 
 			String part = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
 			
-			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasPart> " + part + ".\n" );
-			ttl.append(part + rdfLabelURI + "\"" +score.getParts().get(i).getName() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
-			ttl.append(part + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> \"" + score.getParts().get(i).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#string> . \n" );
+			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasScorePart> " + part + ".\n" );
+			ttl.append(part + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#ScorePart> .\n" );
+			ttl.append(part + rdfLabelURI + "\"" +score.getParts().get(i).getName().replaceAll("[\n\r]", " ") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+			ttl.append(part + rdfIdURI + "\"" + score.getParts().get(i).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#string> . \n" );
 
 			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
 
 				String measure = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId() + ">";
 
 				ttl.append(part + " <http://musik.uni-muenster.de/linkedmusic#hasMeasure> " + measure + " .\n");
-				ttl.append(measure + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> \"" + score.getParts().get(i).getMeasures().get(j).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
+				ttl.append(measure + rdfIdURI + "\"" + score.getParts().get(i).getMeasures().get(j).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getDirection().size(); k++) {
 
-					String direction = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/DIRECTION_"+score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
-
-					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasDirection> " + direction + " .\n");
+					String direction = "<http://musik.uni-muenster.de/"+scoreID.toString()+"/DIRECTION_"+score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().size(); l++) {
-
-						ttl.append(direction + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#" +  score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() +"> .\n" );
-
+						
+						String dynamic = "<http://musik.uni-muenster.de/node/DYNAMIC_"+ score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + ">";
+						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasDynamic> " + dynamic + " . \n");
+						ttl.append(dynamic + rdfTypeURI + "<http://musik.uni-muenster.de/linkedmusic#"+score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + "> . \n ");
 					}
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().size(); l++) {
@@ -123,7 +125,9 @@ public class MusicXMLParser {
 					}
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().size(); l++) {
-
+						
+						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasDirection> " + direction + " .\n");
+						
 						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
 						wedge = wedge.substring(0, 1).toUpperCase() + wedge.substring(1);
 
@@ -351,7 +355,7 @@ public class MusicXMLParser {
 
 					}
 
-					ttl.append(rhythmic + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> \""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
+					ttl.append(rhythmic + rdfIdURI + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasRhythm> " + rhythmic + " . \n");
 
 					if(rhythmicType==null){
@@ -362,43 +366,37 @@ public class MusicXMLParser {
 
 						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#" + rhythmicType + "> . \n");
 
-					}
-
-					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + rhythmicVoice + "\" . \n");					
-					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
-					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStem> \"" + rhythmicStem + "\" .\n");
-					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStaff> \"" + rhythmicStaff + "\" .\n");
-
-
-					String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_N" + k + ">";
-					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmicNote + " . \n");					
-					
-					//String pitchStep = " <http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/STEP_"+score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep()+"> ";
-					//ttl.append(pitchStep + " a <http://musik.uni-muenster.de/linkedmusic#" + this.getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep()) + "> . \n");
-
-					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
-
-										
-					String accidentalValue ="";
-					
-					
-					if(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getAccidental()!=null){
 						
-						accidentalValue = this.getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getAccidental().toLowerCase());
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + rhythmicVoice + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");					
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStem> \"" + rhythmicStem + "\" .\n");
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStaff> \"" + rhythmicStaff + "\" .\n");
+	
+	
+						String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_N" + k + ">";
+						int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
+											
+						String accidentalValue ="";
 						
+						if(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getAccidental()!=null){
+							
+							accidentalValue = this.getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getAccidental().toLowerCase());
+							
+						}
+						
+						
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmicNote + " . \n");	
+						String noteType = "<http://purl.org/NET/c4dm/keys.owl#"+score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep().toUpperCase() + accidentalValue+">";
+						
+						if(!score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep().toUpperCase().equals("REST")){
+						
+							ttl.append(rhythmicNote +  rdfTypeURI + noteType + ". \n");
+							ttl.append(rhythmicNote + " <http://musik.uni-muenster.de/linkedmusic#hasOctave> \"" + noteOctave + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
+						
+						}
 					}
 					
 					
-					
-					String noteType = "<http://purl.org/NET/c4dm/keys.owl#"+score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep().toUpperCase() + accidentalValue+">";
-					
-					ttl.append(rhythmicNote +  rdfTypeURI + noteType + ". \n");
-					
-					
-					//ttl.append(rhythmicNote + " <http://musik.uni-muenster.de/linkedmusic#hasStep> " + pitchStep + " .\n");
-					ttl.append(rhythmicNote + " <http://musik.uni-muenster.de/linkedmusic#hasOctave> \"" + noteOctave + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
-
-
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getBeam().size(); l++) {
 
 						/*						
@@ -570,13 +568,14 @@ public class MusicXMLParser {
 			}
 
 
+			@SuppressWarnings("static-access")
 			FileOutputStream fileStream = new FileOutputStream(new File(this.getOutputFolder() + this.getInputFile().separator + fileName +".nt"),false);
 			OutputStreamWriter writer = new OutputStreamWriter(fileStream, "UTF8");
 
 			writer.append(buffer.toString());
 			writer.close();
 
-			System.out.println("N-Triples for [" + this.getInputFile().getName() + "] generated at: " + this.getOutputFolder());
+			System.out.println("N-Triples for [" + this.getInputFile().getName() + "] generated at: " + this.getOutputFolder() + "\n");
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();		
