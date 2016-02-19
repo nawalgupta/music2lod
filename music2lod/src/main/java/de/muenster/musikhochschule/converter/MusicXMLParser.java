@@ -1154,11 +1154,7 @@ public class MusicXMLParser {
 							}
 						}
 
-
-
-
 						NodeList nodesMeasuresDirections = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']/direction", document,XPathConstants.NODESET);
-
 
 
 						for (int l = 0; l < nodesMeasuresDirections.getLength(); l++) {
@@ -1248,15 +1244,17 @@ public class MusicXMLParser {
 							if(elementDirections.getElementsByTagName("wedge").item(0) !=null){
 
 								Wedge wedge = new Wedge();
-								wedge.setSpread(Integer.parseInt(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("spread").getTextContent()));
 								wedge.setType(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("type").getTextContent());
+								
+								if(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("spread")!=null){
+								
+									wedge.setSpread(Integer.parseInt(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("spread").getTextContent()));
+								
+								}
 
 								directions.getWedge().add(wedge);
 
 							}
-
-
-
 
 							score.getParts().get(i).getMeasures().get(j).getDirection().add(directions);
 
