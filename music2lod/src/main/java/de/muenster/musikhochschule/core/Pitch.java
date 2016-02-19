@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Pitch {
 
-	String step;
-	int octave;
+	private String step;
+	private int octave;
 	
 	public Pitch() {
 		super();

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Notation {
 
-	ArrayList<Slur> slur;
-	ArrayList<Articulation> articulation;
+	private ArrayList<Slur> slur;
+	private ArrayList<Articulation> articulation;
 	
 	public Notation() {
 		super();

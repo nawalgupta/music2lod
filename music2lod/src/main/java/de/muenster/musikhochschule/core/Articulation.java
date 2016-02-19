@@ -2,7 +2,7 @@ package de.muenster.musikhochschule.core;
 
 public class Articulation {
 
-	String type;
+	private String type;
 
 	public Articulation() {
 		super();

@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Work {
 
-	String title;
-	String number;
+	private String title;
+	private String number;
 	
 	public Work() {
 		super();

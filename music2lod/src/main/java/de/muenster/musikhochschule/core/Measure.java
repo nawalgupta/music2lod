@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class Measure {
 
-	String id;	
-	int divisions;
-	Key key;
-	TimeSignature time;
-	Clef clef;
-	ArrayList<Direction> direction;
-	ArrayList<Note> notes;
+	private String id;	
+	private int divisions;
+	private Key key;
+	private TimeSignature time;
+	private Clef clef;
+	private ArrayList<Direction> direction;
+	private ArrayList<Note> notes;
 	
 	public Measure() {
 		super();

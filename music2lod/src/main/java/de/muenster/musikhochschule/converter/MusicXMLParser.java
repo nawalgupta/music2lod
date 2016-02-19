@@ -57,7 +57,7 @@ public class MusicXMLParser {
 		String rdfTypeURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ";
 		String rdfLabelURI = " <http://www.w3.org/2000/01/rdf-schema#label> ";
 		String rdfIdURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ";
-		
+				
 		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
 
 		UUID scoreID = UUID.randomUUID();
@@ -93,7 +93,7 @@ public class MusicXMLParser {
 		
 		for (int i = 0; i < score.getParts().size(); i++) {
 
-			String part = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
+			String part = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
 			String partID = score.getParts().get(i).getId();
 					
 			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasScorePart> " + part + ".\n" );
@@ -103,7 +103,7 @@ public class MusicXMLParser {
 
 			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
 
-				String measure = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId() + ">";
+				String measure = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId() + ">";
 				String measureID = score.getParts().get(i).getMeasures().get(j).getId();
 				
 				ttl.append(part + " <http://musik.uni-muenster.de/linkedmusic#hasMeasure> " + measure + " .\n");
@@ -122,7 +122,7 @@ public class MusicXMLParser {
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().size(); l++) {
 
-						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasInstruction> \"" + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().get(l).getWordText()  + "\". \n");
+						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasInstruction> \"" + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().get(l).getWordText()  + "\"^^<http://www.w3.org/2001/XMLSchema#string>. \n");
 
 					}
 
@@ -142,7 +142,7 @@ public class MusicXMLParser {
 
 				if(score.getParts().get(i).getMeasures().get(j).getClef().getSign()!=null){
 
-					String clef = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/CLEF_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + ">";
+					String clef = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CLEF_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + ">";
 
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasClef> " + clef + " .\n");
 
@@ -191,7 +191,7 @@ public class MusicXMLParser {
 
 					}
 
-					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==4 && score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("F")){
+					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==5 && score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("F")){
 
 						clefType = "<http://musik.uni-muenster.de/linkedmusic#SubBass>";
 
@@ -253,7 +253,7 @@ public class MusicXMLParser {
 
 					//}
 
-					String time = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/TIME_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
+					String time = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/TIME_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
 
 					ttl.append(time + " <http://musik.uni-muenster.de/linkedmusic#hasBeats> \"" + score.getParts().get(i).getMeasures().get(j).getTime().getBeats() + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(time + " <http://musik.uni-muenster.de/linkedmusic#hasBeatType> \"" + score.getParts().get(i).getMeasures().get(j).getTime().getBeatType() + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
@@ -268,7 +268,7 @@ public class MusicXMLParser {
 				
 				
 				
-				String key = "<http://musik.uni-muenster.de/resource/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
+				String key = "<http://musik.uni-muenster.de/node/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
 				String keyType = "";
 
 
@@ -341,7 +341,7 @@ public class MusicXMLParser {
 					ttl.append(rhythmic + rdfIdURI + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasRhythm> " + rhythmic + " . \n");
 					
-					String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + k + ">";
+					String rhythmicNote = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + k + ">";
 					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
 					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
 					

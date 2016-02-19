@@ -4,18 +4,17 @@ import java.util.ArrayList;
 
 public class Note {
 
-	Pitch pitch;
-	Lyric lyric;
-	ArrayList<Beam> beam;
-	Notation notation;
-	
-	int duration;
-	String accidental;
-	String type;
-	int voice;
-	String stem;
-	int staff;
-	boolean chord;
+	private Pitch pitch;
+	private Lyric lyric;
+	private ArrayList<Beam> beam;
+	private Notation notation;	
+	private int duration;
+	private String accidental;
+	private String type;
+	private int voice;
+	private String stem;
+	private int staff;
+	private boolean chord;
 	
 	public Note() {
 		

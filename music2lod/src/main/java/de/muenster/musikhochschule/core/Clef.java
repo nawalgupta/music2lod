@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Clef {
 
-	String sign;
-	int line;
+	private String sign;
+	private int line;
 	
 	public Clef() {
 		super();

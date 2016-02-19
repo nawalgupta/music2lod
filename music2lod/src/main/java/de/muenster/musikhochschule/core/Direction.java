@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Direction {
 
-	ArrayList<Dynamic> dynamic;
-	ArrayList<Word> word;
-	ArrayList<Wedge> wedge;
-	int staff;
+	private ArrayList<Dynamic> dynamic;
+	private ArrayList<Word> word;
+	private ArrayList<Wedge> wedge;
+	private int staff;
 	
 	
 	

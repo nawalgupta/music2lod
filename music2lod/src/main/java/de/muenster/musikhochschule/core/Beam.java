@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Beam {
 
-	String type;
-	int number;
+	private String type;
+	private int number;
 	
 	public Beam() {
 		super();

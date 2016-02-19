@@ -2,12 +2,13 @@ package de.muenster.musikhochschule.core;
 
 public class Wedge {
 
-	String type;
-	int number;
+	private String type;
+	private int number;
+	
 	public Wedge() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+	
 	public String getType() {
 		return type;
 	}

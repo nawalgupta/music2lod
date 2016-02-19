@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Dynamic {
 	
-	String type;
-	String value;
+	private String type;
+	private String value;
 	
 	public Dynamic() {
 

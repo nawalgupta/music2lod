@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Part {
 
-	String id;
-	String name;
+	private String id;
+	private String name;
 	
 	ArrayList<Measure> measures;
 	

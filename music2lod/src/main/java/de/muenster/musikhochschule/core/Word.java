@@ -2,7 +2,7 @@ package de.muenster.musikhochschule.core;
 
 public class Word {
 
-	String word;
+	private String word;
 
 	public Word() {
 		super();

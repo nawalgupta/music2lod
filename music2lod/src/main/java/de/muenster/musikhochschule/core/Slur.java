@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Slur {
 
-	int number;
-	String type;
+	private int number;
+	private String type;
 	
 	public Slur() {
 		super();

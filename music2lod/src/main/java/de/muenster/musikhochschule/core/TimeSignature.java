@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class TimeSignature {
 
-	int beats;
-	int beatType;
+	private int beats;
+	private int beatType;
 			
 	public TimeSignature() {
 

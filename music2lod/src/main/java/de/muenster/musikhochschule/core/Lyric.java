@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Lyric {
 
-	String syllabic;
-	String text;
+	private String syllabic;
+	private String text;
 	
 	public Lyric() {
 		super();

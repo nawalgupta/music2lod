@@ -2,8 +2,8 @@ package de.muenster.musikhochschule.core;
 
 public class Key {
 
-	int fifths;
-	String mode;
+	private int fifths;
+	private String mode;
 	
 	public Key() {
 		super();
