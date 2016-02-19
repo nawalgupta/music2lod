@@ -335,7 +335,6 @@ public class MusicXMLParser {
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
-					//String rhythmicStem = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStem(); 
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
 
 
@@ -360,25 +359,29 @@ public class MusicXMLParser {
 					ttl.append(rhythmic + rdfIdURI + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasRhythm> " + rhythmic + " . \n");
 
-					if(rhythmicType==null){
+					
+					String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + k + ">";
+					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
+					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
+					
+					ttl.append(staff + rdfTypeURI + "<http://musik.uni-muenster.de/linkedmusic#Staff> . \n");
+					ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#belongsToStaff> "+ staff+ " . \n");
+					
+					
+					if(rhythmicType == null){
 
-						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Rest> . \n");
+						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Whole> . \n");
+						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmicNote + " . \n");
+						ttl.append(rhythmicNote + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Rest> . \n");
 
 					} else {
 
-						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#" + rhythmicType + "> . \n");
-
-						
+						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#" + rhythmicType + "> . \n");						
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + rhythmicVoice + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");					
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
-						//ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasStem> \"" + rhythmicStem + "\" .\n");
-						String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_P" + partID  +"_S"+ score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff() +">";
 						
-						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#belongsToStaff> "+ staff+ " . \n");
-						ttl.append(staff + rdfTypeURI + "<http://musik.uni-muenster.de/linkedmusic#Staff> . \n");
-	
-						String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_N" + k + ">";
-						int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
+						
+
 											
 						String accidentalValue ="";
 						
@@ -388,7 +391,6 @@ public class MusicXMLParser {
 							
 						}
 						
-						
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmicNote + " . \n");	
 						String noteType = "<http://purl.org/NET/c4dm/keys.owl#"+score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep().toUpperCase() + accidentalValue+">";
 						
@@ -397,6 +399,10 @@ public class MusicXMLParser {
 							ttl.append(rhythmicNote +  rdfTypeURI + noteType + ". \n");
 							ttl.append(rhythmicNote + " <http://musik.uni-muenster.de/linkedmusic#hasOctave> \"" + noteOctave + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 						
+						} else {
+							
+							ttl.append(rhythmicNote +  rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Rest> . \n");
+							
 						}
 					}
 					
