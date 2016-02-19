@@ -337,28 +337,9 @@ public class MusicXMLParser {
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
 
-
-					//TODO: correct triple redundancy (Chord type and anchor are being duplicated)  
-
-					if(!score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).isChord()){
-
-						chordAnchor = k;
-						chordAnchorObj = rhythmic;
-
-					} else {
-
-						String chord = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
-						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmic + " . \n" );
-
-
-						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + chordAnchorObj + " . \n");
-						ttl.append(chord + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Chord> . \n");
-
-					}
-
+				
 					ttl.append(rhythmic + rdfIdURI + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasRhythm> " + rhythmic + " . \n");
-
 					
 					String rhythmicNote = "<http://musik.uni-muenster.de/resource/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + k + ">";
 					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
@@ -404,6 +385,28 @@ public class MusicXMLParser {
 							ttl.append(rhythmicNote +  rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Rest> . \n");
 							
 						}
+					}
+					
+					
+					
+					//TODO: correct triple redundancy (Chord type and anchor are being duplicated)  
+
+					
+					String chord = "";
+					
+					if(!score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).isChord()){
+
+						chordAnchor = k;
+						chordAnchorObj = rhythmicNote;
+
+					} else {
+
+						chord = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
+						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + rhythmicNote + " . \n" );
+
+						ttl.append(chord + " <http://musik.uni-muenster.de/linkedmusic#hasNote> " + chordAnchorObj + " . \n");
+						ttl.append(chord + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#Chord> . \n");
+
 					}
 					
 					
@@ -663,7 +666,6 @@ public class MusicXMLParser {
 
 				if (nodeWork.getLength() != 0 && nodeWork != null) {
 					
-					System.out.println(nodeWork.getLength());
 					Element elementWork = (Element) nodeWork.item(0);
 					
 					if(elementWork.getElementsByTagName("work-number").item(0)!=null)identification.setWorkNumber(elementWork.getElementsByTagName("work-number").item(0).getTextContent());					

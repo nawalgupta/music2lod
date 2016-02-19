@@ -13,23 +13,25 @@ public class Tests {
 		parser.setExportFolder("nt/");
 		parser.setVerbose(false);
 
-		//parser.loadMusicXML(new File("scores/xmlsamples/BeetAnGeSample.xml"));
-		//parser.exportAsNTriples();
+//		parser.loadMusicXML(new File("scores/xmlsamples/BeetAnGeSample.xml"));
+//		parser.printScoreDetails();
+//		
+//		parser.exportAsNTriples();
+
 		
 		File[] files = new File("scores/xmlsamples/").listFiles();
 		
 		for (File file : files) {
 
 			if(file.getName().endsWith(".xml")){
-				
-				System.out.println(file.getName());
+
 				parser.loadMusicXML(file);
 				parser.exportAsNTriples();
 				
 			}
 			
 		}
-
+	
 	}
 
 
