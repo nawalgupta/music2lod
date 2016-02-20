@@ -306,7 +306,7 @@ public class MusicXMLParser {
 						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==4) keyType = "<http://purl.org/NET/c4dm/keys.owl#CSharpMinor>";
 						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==5) keyType = "<http://purl.org/NET/c4dm/keys.owl#GSharpMinor>";
 						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==6) keyType = "<http://purl.org/NET/c4dm/keys.owl#DSharpMinor>";
-						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==7) keyType = "<http://purl.org/NET/c4dm/keys.owl#BFlatMinor>";
+						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==7) keyType = "<http://purl.org/NET/c4dm/keys.owl#AFlatMinor>";
 
 						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==-1) keyType = "<http://purl.org/NET/c4dm/keys.owl#DMinor>";
 						if (score.getParts().get(i).getMeasures().get(j).getKey().getFifths()==-2) keyType = "<http://purl.org/NET/c4dm/keys.owl#GMinor>";
