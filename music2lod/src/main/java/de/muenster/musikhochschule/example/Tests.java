@@ -1,7 +1,8 @@
 package de.muenster.musikhochschule.example;
 
 import java.io.File;
-import de.muenster.musikhochschule.converter.MusicXMLParser;
+
+import de.muenster.musikhochschule.parser.MusicXMLParser;
 
 public class Tests {
 

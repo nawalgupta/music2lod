@@ -1,4 +1,4 @@
-package de.muenster.musikhochschule.converter;
+package de.muenster.musikhochschule.parser;
 
 import java.io.File;
 import java.io.FileOutputStream;
