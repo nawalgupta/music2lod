@@ -95,7 +95,9 @@ public class MusicXMLParser {
 
 			String part = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/PART_"+score.getParts().get(i).getId() + ">";
 			String partID = score.getParts().get(i).getId();
-					
+			String key = "";
+			String keyType ="";
+			
 			ttl.append(scoreSubject + " <http://musik.uni-muenster.de/linkedmusic#hasScorePart> " + part + ".\n" );
 			ttl.append(part + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#ScorePart> .\n" );
 			ttl.append(part + rdfLabelURI + "\"" +score.getParts().get(i).getName().replaceAll("[\n\r]", " ") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
@@ -268,12 +270,13 @@ public class MusicXMLParser {
 				
 				
 				
-				String key = "<http://musik.uni-muenster.de/node/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
-				String keyType = "";
+				
+				//String keyType = "";
 
 
 				if(score.getParts().get(i).getMeasures().get(j).getKey().getMode()!=null){
 
+					key = "<http://musik.uni-muenster.de/node/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
 					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasKey> " + key + ". \n");
 
 					if(score.getParts().get(i).getMeasures().get(j).getKey().getMode().equals("major")){
@@ -320,6 +323,10 @@ public class MusicXMLParser {
 
 					ttl.append(key + rdfTypeURI + keyType + " . \n");
 					
+				} else {
+										
+					ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasKey> " + key + ". \n");
+					ttl.append(key + rdfTypeURI + keyType + " . \n");
 				}
 
 				
