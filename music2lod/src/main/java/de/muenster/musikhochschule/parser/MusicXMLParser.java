@@ -121,6 +121,7 @@ public class MusicXMLParser {
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().size(); l++) {
 
+						
 						String dynamic = "<http://musik.uni-muenster.de/node/DYNAMIC_"+ score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + ">";
 						ttl.append(measure + " <http://musik.uni-muenster.de/linkedmusic#hasDynamic> " + dynamic + " . \n");
 						ttl.append(dynamic + rdfTypeURI + "<http://musik.uni-muenster.de/linkedmusic#"+score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + "> . \n ");
@@ -332,6 +333,8 @@ public class MusicXMLParser {
 
 					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
+					
+						
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
@@ -356,6 +359,10 @@ public class MusicXMLParser {
 
 					} else {
 
+						if(rhythmicType.toLowerCase().equals("16th")) rhythmicType = "Sixteenth";
+						if(rhythmicType.toLowerCase().equals("32nd")) rhythmicType = "Thirtysecond";
+						if(rhythmicType.toLowerCase().equals("64th")) rhythmicType = "Sixtyfourth";
+						
 						ttl.append(rhythmic + rdfTypeURI + " <http://musik.uni-muenster.de/linkedmusic#" + rhythmicType + "> . \n");						
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasVoice> \"" + rhythmicVoice + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");					
 						ttl.append(rhythmic + " <http://musik.uni-muenster.de/linkedmusic#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
