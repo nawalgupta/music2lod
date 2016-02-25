@@ -64,10 +64,12 @@ public class MusicXMLParser {
 		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
 
 		UUID scoreID = UUID.randomUUID();
-
 		StringBuffer ttl = new StringBuffer();		
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
 
+		int directionCounter = 0;
+		int loudnessCounter = 0;
+		
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
 		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
 
@@ -103,7 +105,7 @@ public class MusicXMLParser {
 			String time = "";
 			int beats = 0;
 			int beatType = 0;
-
+			
 
 			ttl.append(scoreSubject + " <" + scoreOntologyURI + "#hasScorePart> " + part + ".\n" );
 			ttl.append(part + rdfTypeURI + " <" + scoreOntologyURI + "#ScorePart> .\n" );
@@ -120,14 +122,15 @@ public class MusicXMLParser {
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getDirection().size(); k++) {
 
-					String direction = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/DYNAMIC_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
-
+					//String loudness = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/DIRECTION_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
+					String direction = "";
+					
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().size(); l++) {
 
-						
-						String dynamic = "<http://musik.uni-muenster.de/node/DYNAMIC_"+ score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + ">";
-						ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + dynamic + " . \n");
-						ttl.append(dynamic + rdfTypeURI + "<" + scoreOntologyURI + "#"+score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + "> . \n ");
+						loudnessCounter++;
+						String loudness = "<http://musik.uni-muenster.de/node/DYNAMIC_LOUDNESS_"+ score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + "_" + loudnessCounter + ">";
+						ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + loudness + " . \n");
+						ttl.append(loudness + rdfTypeURI + "<" + scoreOntologyURI + "#"+score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().get(l).getType() + "> . \n ");
 					}
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().size(); l++) {
@@ -135,17 +138,35 @@ public class MusicXMLParser {
 						ttl.append(measure + " <" + scoreOntologyURI + "#hasInstruction> \"" + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().get(l).getWordText()  + "\"^^<http://www.w3.org/2001/XMLSchema#string>. \n");
 
 					}
+					
+					
+					
+					/*
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().size(); l++) {
 
+						//ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + direction + " .\n");
+						
+						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
+						
+						if(wedge.toLowerCase().equals("crescendo") || wedge.toLowerCase().equals("diminuendo")){
+
+							directionCounter++;
+							direction = " <http://musik.uni-muenster.de/node/DYNAMIC_DIRECTION_" + partID + "_M" + measureID + "_" + directionCounter + "> " ;							
+							ttl.append(direction + rdfTypeURI + " <" + scoreOntologyURI + "#" + this.getCapital(wedge)  +"> .\n" );
+
+						}
+						
+
+						
 						ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + direction + " .\n");
 
-						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
-						wedge = wedge.substring(0, 1).toUpperCase() + wedge.substring(1);
-
-						ttl.append(direction + rdfTypeURI + " <" + scoreOntologyURI + "#" + wedge  +"> .\n" );
+						
+						
 
 					}
+					
+					*/
 
 				}
 
@@ -419,6 +440,32 @@ public class MusicXMLParser {
 
 					}
 
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					/**
+					 * TBC
+					 */
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getBeam().size(); l++) {
 
