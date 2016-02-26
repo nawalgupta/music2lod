@@ -1,12 +1,9 @@
 package de.muenster.musikhochschule.core;
 
-import java.util.ArrayList;
-
 public class Direction {
 
-	private ArrayList<Dynamic> dynamic;
-	private ArrayList<Word> word;
-	private ArrayList<Wedge> wedge;
+	private Word word;
+	private Wedge wedge;
 	private int staff;
 	
 	
@@ -14,9 +11,8 @@ public class Direction {
 	public Direction() {
 		super();
 	
-		this.dynamic = new ArrayList<Dynamic>();
-		this.word = new ArrayList<Word>();
-		this.wedge = new ArrayList<Wedge>();
+		this.word = new Word();
+		this.wedge = new Wedge();
 	}
 	
 	public int getStaff() {
@@ -27,16 +23,20 @@ public class Direction {
 		this.staff = staff;
 	}
 	
-	public ArrayList<Dynamic> getDynamic() {
-		return dynamic;
-	}
-
-	public ArrayList<Word> getWord() {
+	public Word getWord() {
 		return word;
 	}
 
-	public ArrayList<Wedge> getWedge() {
+	public Wedge getWedge() {
 		return wedge;
+	}
+
+	public void setWord(Word word) {
+		this.word = word;
+	}
+
+	public void setWedge(Wedge wedge) {
+		this.wedge = wedge;
 	}
 	
 	

@@ -6,7 +6,6 @@ public class Note {
 
 	private Pitch pitch;
 	private Lyric lyric;
-	private ArrayList<Beam> beam;
 	private Notation notation;	
 	private int duration;
 	private String accidental;
@@ -15,6 +14,10 @@ public class Note {
 	private String stem;
 	private int staff;
 	private boolean chord;
+
+	private ArrayList<Beam> beam;
+	private ArrayList<Direction> direction;
+	private ArrayList<Dynamic> dynamic;
 	
 	public Note() {
 		
@@ -23,6 +26,8 @@ public class Note {
 		this.lyric = new Lyric();
 		this.notation = new Notation();
 		this.beam = new ArrayList<Beam>();
+		this.direction = new ArrayList<Direction>();
+		this.dynamic = new ArrayList<Dynamic>();
 		chord = false;
 	}
 
@@ -106,6 +111,16 @@ public class Note {
 
 	public void setChord(boolean chord) {
 		this.chord = chord;
+	}
+
+
+	public ArrayList<Direction> getDirection() {
+		return direction;
+	}
+
+
+	public ArrayList<Dynamic> getDynamic() {
+		return dynamic;
 	}
 
 	

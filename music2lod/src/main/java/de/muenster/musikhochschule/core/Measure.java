@@ -9,7 +9,6 @@ public class Measure {
 	private Key key;
 	private TimeSignature time;
 	private Clef clef;
-	private ArrayList<Direction> direction;
 	private ArrayList<Note> notes;
 	
 	public Measure() {
@@ -19,7 +18,7 @@ public class Measure {
 		this.key = new Key();
 		this.time = new TimeSignature();
 		this.clef = new Clef();
-		this.direction = new ArrayList<Direction>();
+	
 	}
 
 	
@@ -65,16 +64,7 @@ public class Measure {
 
 	public Clef getClef() {
 		return clef;
-	}
-
-
-
-	public ArrayList<Direction> getDirection() {
-		
-		return direction;
-	}
-	
-	
+	}	
 	
 	
 }

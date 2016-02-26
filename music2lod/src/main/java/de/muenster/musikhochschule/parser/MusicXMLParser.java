@@ -57,7 +57,7 @@ public class MusicXMLParser {
 		String rdfTypeURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ";
 		String rdfLabelURI = " <http://www.w3.org/2000/01/rdf-schema#label> ";
 		String rdfIdURI = " <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ";
-		
+
 		String scoreOntologyURI = "http://linkeddata.uni-muenster.de/ontology/musicscore";		
 		String scoreOntologySequence = " <" + scoreOntologyURI + "#hasSequence> ";
 
@@ -67,9 +67,8 @@ public class MusicXMLParser {
 		StringBuffer ttl = new StringBuffer();		
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
 
-		int directionCounter = 0;
 		int loudnessCounter = 0;
-		
+
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
 		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
 
@@ -105,7 +104,7 @@ public class MusicXMLParser {
 			String time = "";
 			int beats = 0;
 			int beatType = 0;
-			
+
 
 			ttl.append(scoreSubject + " <" + scoreOntologyURI + "#hasScorePart> " + part + ".\n" );
 			ttl.append(part + rdfTypeURI + " <" + scoreOntologyURI + "#ScorePart> .\n" );
@@ -114,17 +113,27 @@ public class MusicXMLParser {
 
 			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
 
-				String measure = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/MEASURE_" + score.getParts().get(i).getId() + "_" +score.getParts().get(i).getMeasures().get(j).getId() + ">";
+				String measure = "<http://musik.uni-muenster.de/node/" + scoreID.toString() + "/MEASURE_" + score.getParts().get(i).getId() + "_" + score.getParts().get(i).getMeasures().get(j).getId() + ">";
 				String measureID = score.getParts().get(i).getMeasures().get(j).getId();
 
 				ttl.append(part + " <" + scoreOntologyURI + "#hasMeasure> " + measure + " .\n");
 				ttl.append(measure + scoreOntologySequence + "\"" + score.getParts().get(i).getMeasures().get(j).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 
+
+
+
+
+
+				/*
+
+
+
+
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getDirection().size(); k++) {
 
 					//String loudness = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/DIRECTION_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
 					String direction = "";
-					
+
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getDynamic().size(); l++) {
 
 						loudnessCounter++;
@@ -138,17 +147,17 @@ public class MusicXMLParser {
 						ttl.append(measure + " <" + scoreOntologyURI + "#hasInstruction> \"" + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWord().get(l).getWordText()  + "\"^^<http://www.w3.org/2001/XMLSchema#string>. \n");
 
 					}
-					
-					
-					
-					/*
+
+
+
+
 
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().size(); l++) {
 
 						//ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + direction + " .\n");
-						
+
 						String wedge = score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getWedge().get(l).getType();
-						
+
 						if(wedge.toLowerCase().equals("crescendo") || wedge.toLowerCase().equals("diminuendo")){
 
 							directionCounter++;
@@ -156,19 +165,27 @@ public class MusicXMLParser {
 							ttl.append(direction + rdfTypeURI + " <" + scoreOntologyURI + "#" + this.getCapital(wedge)  +"> .\n" );
 
 						}
-						
 
-						
+
+
 						ttl.append(measure + " <" + scoreOntologyURI + "#hasDynamic> " + direction + " .\n");
 
-						
-						
+
+
 
 					}
-					
-					*/
+
+
 
 				}
+
+
+				 */
+
+
+
+
+
 
 
 				if(score.getParts().get(i).getMeasures().get(j).getClef().getSign()!=null){
@@ -285,12 +302,6 @@ public class MusicXMLParser {
 
 
 
-
-
-
-				//String keyType = "";
-
-
 				if(score.getParts().get(i).getMeasures().get(j).getKey().getMode()!=null){
 
 					key = "<http://musik.uni-muenster.de/node/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
@@ -357,8 +368,8 @@ public class MusicXMLParser {
 
 					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
-					
-						
+
+
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
@@ -386,12 +397,12 @@ public class MusicXMLParser {
 						if(rhythmicType.toLowerCase().equals("16th")) rhythmicType = "Sixteenth";
 						if(rhythmicType.toLowerCase().equals("32nd")) rhythmicType = "Thirtysecond";
 						if(rhythmicType.toLowerCase().equals("64th")) rhythmicType = "Sixtyfourth";
-												
+
 						ttl.append(rhythmic + rdfTypeURI + " <" + scoreOntologyURI + "#" + rhythmicType + "> . \n");																	
 						ttl.append(rhythmic + " <" + scoreOntologyURI + "#hasDuration> \"" + rhythmicDuration + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 
 						String voice = " <http://musik.uni-muenster.de/node/VOICE_" + scoreID + "_" + rhythmicVoice + "> ";
-						
+
 						ttl.append(rhythmic + " <" + scoreOntologyURI + "#hasVoice> " + voice+ " . \n");
 						ttl.append(voice + rdfTypeURI + " <" + scoreOntologyURI + "#Voice> . \n ");
 
@@ -440,29 +451,48 @@ public class MusicXMLParser {
 
 					}
 
+
 					
+					/**
+					 * Dynamic (loudness): p,pp,ppp,pp,f,ff,fff,fff,sfz,mf
+					 */
 					
+					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().size(); l++) {
 					
+						loudnessCounter++;
+						
+						if(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().get(l).getType()!=null){
+							
+							String loudnessType = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().get(l).getType();
+							
+							String loudness = "<http://musik.uni-muenster.de/node/DYNAMIC_LOUDNESS_"+ loudnessType + "_" + loudnessCounter + ">";	
+							
+							ttl.append(rhythmic + "<" + scoreOntologyURI + "#hasDynamic> " + loudness + " .\n");
+							ttl.append(loudness + rdfTypeURI + " <" + scoreOntologyURI + "#" + loudnessType + "> . \n");
+							
+						}
+						
+					}
+
+
 					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					/**
 					 * TBC
 					 */
@@ -526,6 +556,8 @@ public class MusicXMLParser {
 				System.out.println("--Measure: " + score.getParts().get(i).getMeasures().get(j).getId());
 
 
+				/*
+
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getDirection().size(); k++) {
 
 					System.out.println("----Direction Staff: " + score.getParts().get(i).getMeasures().get(j).getDirection().get(k).getStaff());
@@ -551,6 +583,7 @@ public class MusicXMLParser {
 
 				}
 
+				 */
 
 
 				if(score.getParts().get(i).getMeasures().get(j).getClef().getSign()!=null){
@@ -693,8 +726,6 @@ public class MusicXMLParser {
 				Node currentItem = subfields.item(0);   
 				score.setVersion(currentItem.getTextContent());                                     
 			}
-
-			//System.out.println("MusicXML Version: " + score.getVersion());
 
 			/**
 			 * Loading Header Info
@@ -849,367 +880,421 @@ public class MusicXMLParser {
 						 * Loading all Notes of a single measure
 						 */
 
-						NodeList nodeNotes = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']/note", document,XPathConstants.NODESET);
+						NodeList nodeListMeasureElements = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']", document,XPathConstants.NODESET);
 
 
-						if (nodeNotes.getLength() != 0) {
+						for (int k = 0; k < nodeListMeasureElements.item(0).getChildNodes().getLength(); k++) {
 
 
-							for (int k = 0; k < nodeNotes.getLength(); k++) {
-
-								Element elementNotes = (Element) nodeNotes.item(k);
+							if(nodeListMeasureElements.item(0).getChildNodes().item(k).getNodeName().equals("note")){
 
 
-								/**
-								 * Loading note Pitch (Step)
-								 */	
-								Note note = new Note();
+								if (nodeListMeasureElements.getLength() != 0) {
 
 
-								if(elementNotes.getElementsByTagName("step").item(0)!=null){
-
-									note.getPitch().setStep(elementNotes.getElementsByTagName("step").item(0).getTextContent());
-
-								} else {
-
-									note.getPitch().setStep("rest");
-								}
-
-								/**
-								 * Loading note Pitch (Octave)
-								 */
+									Element elementNotes = (Element) nodeListMeasureElements.item(0).getChildNodes().item(k);
 
 
-								if(elementNotes.getElementsByTagName("octave").item(0)!=null){
-
-									note.getPitch().setOctave(Integer.parseInt(elementNotes.getElementsByTagName("octave").item(0).getTextContent()));
-								} else {
-
-									note.getPitch().setOctave(0);
-								}
-
-								/**
-								 * Loading Note Duration
-								 */
+									/**
+									 * Loading note Pitch (Step)
+									 */	
+									Note note = new Note();
 
 
-								if(elementNotes.getElementsByTagName("duration").item(0)!=null){
+									if(elementNotes.getElementsByTagName("step").item(0)!=null){
 
-									note.setDuration(Integer.parseInt(elementNotes.getElementsByTagName("duration").item(0).getTextContent()));
+										note.getPitch().setStep(elementNotes.getElementsByTagName("step").item(0).getTextContent());
 
-								}
+									} else {
 
+										note.getPitch().setStep("rest");
+									}
 
-								/**
-								 * Loading Note Chord Flag
-								 */
-
-
-								if(elementNotes.getElementsByTagName("chord").item(0)!=null){
-
-									note.setChord(true);
-
-								}
-
-								/**
-								 * Loading Note Type
-								 */
+									/**
+									 * Loading note Pitch (Octave)
+									 */
 
 
-								if(elementNotes.getElementsByTagName("type").item(0)!=null){
+									if(elementNotes.getElementsByTagName("octave").item(0)!=null){
 
-									note.setType(elementNotes.getElementsByTagName("type").item(0).getTextContent());
+										note.getPitch().setOctave(Integer.parseInt(elementNotes.getElementsByTagName("octave").item(0).getTextContent()));
+									} else {
 
-								}
+										note.getPitch().setOctave(0);
+									}
 
-
-								/**
-								 * Loading Note Voice
-								 */
-
-
-								if(elementNotes.getElementsByTagName("voice").item(0)!=null){
-
-									note.setVoice(Integer.parseInt(elementNotes.getElementsByTagName("voice").item(0).getTextContent()));
-
-								}
-
-								/**
-								 * Loading Note Stem
-								 */
-								if(elementNotes.getElementsByTagName("stem").item(0)!=null){
-
-									note.setStem(elementNotes.getElementsByTagName("stem").item(0).getTextContent());
-
-								} else {
-
-									note.setStem("-");
-
-								}
+									/**
+									 * Loading Note Duration
+									 */
 
 
-								/**
-								 * Loading Note Staff
-								 */
+									if(elementNotes.getElementsByTagName("duration").item(0)!=null){
 
-
-								if(elementNotes.getElementsByTagName("staff").item(0)!=null){
-
-									note.setStaff(Integer.parseInt(elementNotes.getElementsByTagName("staff").item(0).getTextContent()));
-
-								}
-
-								/**
-								 * Loading Beam Type
-								 */
-								if(elementNotes.getElementsByTagName("beam").item(0)!=null){
-
-									for (int l = 0; l < elementNotes.getElementsByTagName("beam").getLength(); l++) {
-
-										Beam beam = new Beam();
-										beam.setNumber(Integer.parseInt(elementNotes.getElementsByTagName("beam").item(l).getAttributes().getNamedItem("number").getTextContent()));
-										beam.setType(elementNotes.getElementsByTagName("beam").item(l).getTextContent());
-
-										note.getBeam().add(beam);
+										note.setDuration(Integer.parseInt(elementNotes.getElementsByTagName("duration").item(0).getTextContent()));
 
 									}
 
 
-								}
+									/**
+									 * Loading Note Chord Flag
+									 */
 
 
-								/**
-								 * Loading Note Accidental
-								 */
+									if(elementNotes.getElementsByTagName("chord").item(0)!=null){
+
+										note.setChord(true);
+
+									}
+
+									/**
+									 * Loading Note Type
+									 */
 
 
-								if(elementNotes.getElementsByTagName("accidental").item(0)!=null){
+									if(elementNotes.getElementsByTagName("type").item(0)!=null){
 
-									note.setAccidental(elementNotes.getElementsByTagName("accidental").item(0).getTextContent());
-
-								}
-
-
-								/**
-								 * Loading Note Lyric (Syllabic)
-								 */
-								if(elementNotes.getElementsByTagName("syllabic").item(0)!=null){
-
-									note.getLyric().setSyllabic(elementNotes.getElementsByTagName("syllabic").item(0).getTextContent());
-
-								}
-
-								/**
-								 * Loading Note Lyric (Text)
-								 */
-								if(elementNotes.getElementsByTagName("text").item(0)!=null){
-
-									note.getLyric().setText(elementNotes.getElementsByTagName("text").item(0).getTextContent());
-
-								}
-
-								/**
-								 * Loading Note Notation Slur
-								 */
-								if(elementNotes.getElementsByTagName("slur").item(0)!=null){
-
-									for (int l = 0; l < elementNotes.getElementsByTagName("slur").getLength(); l++) {
-
-										Slur slur = new Slur();
-										slur.setNumber(Integer.parseInt(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("number").getTextContent()));
-										slur.setType(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("type").getTextContent());
-
-										note.getNotation().getSlur().add(slur);
+										note.setType(elementNotes.getElementsByTagName("type").item(0).getTextContent());
 
 									}
 
 
+									/**
+									 * Loading Note Voice
+									 */
+
+
+									if(elementNotes.getElementsByTagName("voice").item(0)!=null){
+
+										note.setVoice(Integer.parseInt(elementNotes.getElementsByTagName("voice").item(0).getTextContent()));
+
+									}
+
+									/**
+									 * Loading Note Stem
+									 */
+									if(elementNotes.getElementsByTagName("stem").item(0)!=null){
+
+										note.setStem(elementNotes.getElementsByTagName("stem").item(0).getTextContent());
+
+									} else {
+
+										note.setStem("-");
+
+									}
+
+
+									/**
+									 * Loading Note Staff
+									 */
+
+
+									if(elementNotes.getElementsByTagName("staff").item(0)!=null){
+
+										note.setStaff(Integer.parseInt(elementNotes.getElementsByTagName("staff").item(0).getTextContent()));
+
+									}
+
+									/**
+									 * Loading Beam Type
+									 */
+									if(elementNotes.getElementsByTagName("beam").item(0)!=null){
+
+										for (int l = 0; l < elementNotes.getElementsByTagName("beam").getLength(); l++) {
+
+											Beam beam = new Beam();
+											beam.setNumber(Integer.parseInt(elementNotes.getElementsByTagName("beam").item(l).getAttributes().getNamedItem("number").getTextContent()));
+											beam.setType(elementNotes.getElementsByTagName("beam").item(l).getTextContent());
+
+											note.getBeam().add(beam);
+
+										}
+
+
+									}
+
+
+									/**
+									 * Loading Note Accidental
+									 */
+
+
+									if(elementNotes.getElementsByTagName("accidental").item(0)!=null){
+
+										note.setAccidental(elementNotes.getElementsByTagName("accidental").item(0).getTextContent());
+
+									}
+
+
+									/**
+									 * Loading Note Lyric (Syllabic)
+									 */
+									if(elementNotes.getElementsByTagName("syllabic").item(0)!=null){
+
+										note.getLyric().setSyllabic(elementNotes.getElementsByTagName("syllabic").item(0).getTextContent());
+
+									}
+
+									/**
+									 * Loading Note Lyric (Text)
+									 */
+									if(elementNotes.getElementsByTagName("text").item(0)!=null){
+
+										note.getLyric().setText(elementNotes.getElementsByTagName("text").item(0).getTextContent());
+
+									}
+
+									/**
+									 * Loading Note Notation Slur
+									 */
+									if(elementNotes.getElementsByTagName("slur").item(0)!=null){
+
+										for (int l = 0; l < elementNotes.getElementsByTagName("slur").getLength(); l++) {
+
+											Slur slur = new Slur();
+											slur.setNumber(Integer.parseInt(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("number").getTextContent()));
+											slur.setType(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("type").getTextContent());
+
+											note.getNotation().getSlur().add(slur);
+
+										}
+
+
+									}
+
+
+
+
+									/**
+									 * Loading Note Notation Articulation Accent
+									 */
+									if(elementNotes.getElementsByTagName("accent").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("accent");
+										note.getNotation().getArticulation().add(articulation);
+
+									}								
+
+
+
+									/**
+									 * Loading Note Notation Articulation Breath-mark
+									 */
+									if(elementNotes.getElementsByTagName("breath-mark").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("breath-mark");
+										note.getNotation().getArticulation().add(articulation);
+
+									}								
+
+									/**
+									 * Loading Note Notation Articulation Caesura
+									 */
+									if(elementNotes.getElementsByTagName("caesura").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("caesura");
+										note.getNotation().getArticulation().add(articulation);
+
+									}									
+
+									/**
+									 * Loading Note Notation Articulation detached-legato
+									 */
+									if(elementNotes.getElementsByTagName("detached-legato").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("detached-legato");
+										note.getNotation().getArticulation().add(articulation);
+
+									}		
+
+
+
+									/**
+									 * Loading Note Notation Articulation Doit
+									 */
+									if(elementNotes.getElementsByTagName("doit").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("doit");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation fallof
+									 */
+									if(elementNotes.getElementsByTagName("fallof").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("fallof");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation plop
+									 */
+									if(elementNotes.getElementsByTagName("plop").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("plop");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation scoop
+									 */
+									if(elementNotes.getElementsByTagName("scoop").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("scoop");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation spiccato
+									 */
+									if(elementNotes.getElementsByTagName("spiccato").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("spiccato");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+									/**
+									 * Loading Note Notation Articulation staccatissimo 
+									 */
+									if(elementNotes.getElementsByTagName("staccatissimo").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("staccatissimo");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation staccato  
+									 */
+									if(elementNotes.getElementsByTagName("staccato").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("staccato");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation stress   
+									 */
+									if(elementNotes.getElementsByTagName("stress").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("stress");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+									/**
+									 * Loading Note Notation Articulation strong-accent   
+									 */
+									if(elementNotes.getElementsByTagName("strong-accent").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("strong-accent");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+									/**
+									 * Loading Note Notation Articulation tenuto    
+									 */
+									if(elementNotes.getElementsByTagName("tenuto").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("tenuto");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+
+									/**
+									 * Loading Note Notation Articulation unstress    
+									 */
+									if(elementNotes.getElementsByTagName("unstress").item(0)!=null){
+
+										Articulation articulation = new Articulation();										
+										articulation.setType("unstress");
+										note.getNotation().getArticulation().add(articulation);
+
+									}	
+
+									score.getParts().get(i).getMeasures().get(j).getRhythmic().add(note);
+
 								}
-
-
-
-
-								/**
-								 * Loading Note Notation Articulation Accent
-								 */
-								if(elementNotes.getElementsByTagName("accent").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("accent");
-									note.getNotation().getArticulation().add(articulation);
-
-								}								
-
-
-
-								/**
-								 * Loading Note Notation Articulation Breath-mark
-								 */
-								if(elementNotes.getElementsByTagName("breath-mark").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("breath-mark");
-									note.getNotation().getArticulation().add(articulation);
-
-								}								
-
-								/**
-								 * Loading Note Notation Articulation Caesura
-								 */
-								if(elementNotes.getElementsByTagName("caesura").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("caesura");
-									note.getNotation().getArticulation().add(articulation);
-
-								}									
-
-								/**
-								 * Loading Note Notation Articulation detached-legato
-								 */
-								if(elementNotes.getElementsByTagName("detached-legato").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("detached-legato");
-									note.getNotation().getArticulation().add(articulation);
-
-								}		
-
-
-
-								/**
-								 * Loading Note Notation Articulation Doit
-								 */
-								if(elementNotes.getElementsByTagName("doit").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("doit");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation fallof
-								 */
-								if(elementNotes.getElementsByTagName("fallof").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("fallof");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation plop
-								 */
-								if(elementNotes.getElementsByTagName("plop").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("plop");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation scoop
-								 */
-								if(elementNotes.getElementsByTagName("scoop").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("scoop");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation spiccato
-								 */
-								if(elementNotes.getElementsByTagName("spiccato").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("spiccato");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-								/**
-								 * Loading Note Notation Articulation staccatissimo 
-								 */
-								if(elementNotes.getElementsByTagName("staccatissimo").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("staccatissimo");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation staccato  
-								 */
-								if(elementNotes.getElementsByTagName("staccato").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("staccato");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation stress   
-								 */
-								if(elementNotes.getElementsByTagName("stress").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("stress");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-								/**
-								 * Loading Note Notation Articulation strong-accent   
-								 */
-								if(elementNotes.getElementsByTagName("strong-accent").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("strong-accent");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-								/**
-								 * Loading Note Notation Articulation tenuto    
-								 */
-								if(elementNotes.getElementsByTagName("tenuto").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("tenuto");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-
-								/**
-								 * Loading Note Notation Articulation unstress    
-								 */
-								if(elementNotes.getElementsByTagName("unstress").item(0)!=null){
-
-									Articulation articulation = new Articulation();										
-									articulation.setType("unstress");
-									note.getNotation().getArticulation().add(articulation);
-
-								}	
-
-								score.getParts().get(i).getMeasures().get(j).getRhythmic().add(note);
 
 
 							}
+
+							
 						}
+
+
+
+						int lastNote = 0;
+						
+						for (int k = 0; k < nodeListMeasureElements.item(0).getChildNodes().getLength(); k++) {
+
+							if(nodeListMeasureElements.item(0).getChildNodes().item(k).getNodeName().equals("direction")){
+						
+
+								//System.out.println("Measure: "+score.getParts().get(i).getMeasures().get(j).getId() +" Note: " + lastNote + "/"+ score.getParts().get(i).getMeasures().get(j).getRhythmic().size()+ " contains direction");
+																
+								Element elementDynamic = (Element) nodeListMeasureElements.item(0).getChildNodes().item(k);
+								Dynamic dynamic = new Dynamic();
+								
+								if(elementDynamic.getElementsByTagName("p").item(0) !=null) dynamic.setType("p");
+								if(elementDynamic.getElementsByTagName("pp").item(0) !=null) dynamic.setType("pp");
+								if(elementDynamic.getElementsByTagName("ppp").item(0) !=null) dynamic.setType("ppp");
+								if(elementDynamic.getElementsByTagName("pppp").item(0) !=null) dynamic.setType("pppp");
+								if(elementDynamic.getElementsByTagName("f").item(0) !=null) dynamic.setType("f");
+								if(elementDynamic.getElementsByTagName("ff").item(0) !=null) dynamic.setType("ff");
+								if(elementDynamic.getElementsByTagName("fff").item(0) !=null) dynamic.setType("fff");
+								if(elementDynamic.getElementsByTagName("ffff").item(0) !=null) dynamic.setType("ffff");
+								if(elementDynamic.getElementsByTagName("sfz").item(0) !=null) dynamic.setType("sfz");
+								if(elementDynamic.getElementsByTagName("mf").item(0) !=null) dynamic.setType("mf");
+								if(elementDynamic.getElementsByTagName("mp").item(0) !=null) dynamic.setType("mp");
+								
+								score.getParts().get(i).getMeasures().get(j).getRhythmic().get(lastNote).getDynamic().add(dynamic);
+								
+							}
+
+							if(nodeListMeasureElements.item(0).getChildNodes().item(k).getNodeName().equals("note")){
+										
+								if(lastNote < score.getParts().get(i).getMeasures().get(j).getRhythmic().size()-1) {
+									
+									lastNote++;
+									
+								}
+								
+							}
+
+						}
+
+
+/*
+
 
 						NodeList nodesMeasuresDirections = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']/direction", document,XPathConstants.NODESET);
 
@@ -1227,28 +1312,28 @@ public class MusicXMLParser {
 							if(elementDirections.getElementsByTagName("p").item(0) !=null){
 
 								dynamic.setType("p");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("pp").item(0) !=null){
 
 								dynamic.setType("pp");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("ppp").item(0) !=null){
 
 								dynamic.setType("ppp");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("pppp").item(0) !=null){
 
 								dynamic.setType("pppp");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
@@ -1257,28 +1342,28 @@ public class MusicXMLParser {
 
 
 								dynamic.setType("f");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("ff").item(0) !=null){
 
 								dynamic.setType("ff");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("fff").item(0) !=null){
 
 								dynamic.setType("fff");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
 							if(elementDirections.getElementsByTagName("ffff").item(0) !=null){
 
 								dynamic.setType("ffff");
-								directions.getDynamic().add(dynamic);
+								directions.setDynamic(dynamic);
 
 							}
 
@@ -1286,7 +1371,7 @@ public class MusicXMLParser {
 							if(elementDirections.getElementsByTagName("words").item(0)!=null){
 
 								word.setWordText(elementDirections.getElementsByTagName("words").item(0).getTextContent());
-								directions.getWord().add(word);							
+								directions.setWord(word);							
 
 							}
 
@@ -1309,13 +1394,18 @@ public class MusicXMLParser {
 
 								}
 
-								directions.getWedge().add(wedge);
+								directions.setWedge(wedge);
 
 							}
 
-							score.getParts().get(i).getMeasures().get(j).getDirection().add(directions);
+							//score.getParts().get(i).getMeasures().get(j).getDirection().add(directions);
 
 						}
+
+
+						*/
+
+
 
 
 
