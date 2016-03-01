@@ -447,7 +447,7 @@ public class MusicXMLParser {
 						ttl.append(chord + " <" + scoreOntologyURI + "#hasNote> " + rhythmicNote + " . \n" );
 
 						ttl.append(chord + " <" + scoreOntologyURI + "#hasNote> " + chordAnchorObj + " . \n");
-						ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#Chord> . \n");
+						ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#NoteSet> . \n");
 
 					}
 
