@@ -369,10 +369,11 @@ public class MusicXMLParser {
 
 				int chordAnchor = 0;
 				String chordAnchorObj="";
+				int rhythmicSequence = 0;
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
 
-					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + k + ">";
+					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k+1) + ">";
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
 
 
@@ -381,10 +382,10 @@ public class MusicXMLParser {
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
 
 
-					ttl.append(rhythmic + scoreOntologySequence + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
+					//ttl.append(rhythmic + scoreOntologySequence + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(measure + " <" + scoreOntologyURI + "#hasRhythm> " + rhythmic + " . \n");
 
-					String rhythmicNote = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + k + ">";
+					String rhythmicNote = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + (k+1) + ">";
 					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
 					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
 
@@ -446,7 +447,11 @@ public class MusicXMLParser {
 
 						chordAnchor = k;
 						chordAnchorObj = rhythmicNote;
-
+						
+						rhythmicSequence++;
+						
+						//ttl.append(rhythmic + scoreOntologySequence + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
+						
 					} else {
 
 						chord = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
@@ -454,13 +459,15 @@ public class MusicXMLParser {
 
 						ttl.append(chord + " <" + scoreOntologyURI + "#hasNote> " + chordAnchorObj + " . \n");
 						ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#NoteSet> . \n");
-
+						
+						
 					}
 
-
+					
+					ttl.append(rhythmic + scoreOntologySequence + "\""+rhythmicSequence+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					
 					/**
-					 * Dynamic (loudness): p,pp,ppp,pp,f,ff,fff,fff,sfz,mf
+					 * Dynamic (loudness): p,pp,ppp,pppp,f,ff,fff,ffff,sfz,mf
 					 */
 					
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().size(); l++) {
