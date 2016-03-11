@@ -120,7 +120,13 @@ public class MusicXMLParser {
 				ttl.append(measure + scoreOntologySequence + "\"" + score.getParts().get(i).getMeasures().get(j).getId() + "\"^^<http://www.w3.org/2001/XMLSchema#int> .\n");
 
 
-
+				if(j > 0) {
+					
+					String previousMeasure = "<http://musik.uni-muenster.de/node/" + scoreID.toString() + "/MEASURE_" + score.getParts().get(i).getId() + "_" + score.getParts().get(i).getMeasures().get(j-1).getId() + ">";
+					
+					ttl.append(previousMeasure + " <" + scoreOntologyURI + "#nextMeasure> " + measure + ". \n");
+					
+				}
 
 
 
