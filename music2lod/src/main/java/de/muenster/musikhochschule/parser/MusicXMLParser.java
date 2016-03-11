@@ -25,7 +25,6 @@ import org.xml.sax.SAXException;
 import de.muenster.musikhochschule.core.Articulation;
 import de.muenster.musikhochschule.core.Beam;
 import de.muenster.musikhochschule.core.Creator;
-import de.muenster.musikhochschule.core.Direction;
 import de.muenster.musikhochschule.core.Dynamic;
 import de.muenster.musikhochschule.core.Identification;
 import de.muenster.musikhochschule.core.Measure;
@@ -33,8 +32,6 @@ import de.muenster.musikhochschule.core.Note;
 import de.muenster.musikhochschule.core.Part;
 import de.muenster.musikhochschule.core.Score;
 import de.muenster.musikhochschule.core.Slur;
-import de.muenster.musikhochschule.core.Wedge;
-import de.muenster.musikhochschule.core.Word;
 
 public class MusicXMLParser {
 
