@@ -268,9 +268,6 @@ public class MusicXMLParser {
 					ttl.append(clef + rdfTypeURI + clefType + " . \n");
 
 
-
-
-
 				}
 
 
@@ -285,7 +282,7 @@ public class MusicXMLParser {
 					ttl.append(time + " <" + scoreOntologyURI + "#hasBeats> \"" + beats + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 					ttl.append(time + " <" + scoreOntologyURI + "#hasBeatType> \"" + beatType + "\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
 
-					ttl.append(measure + " <" + scoreOntologyURI + "#hasTime> " + time + ". \n");					
+					ttl.append(measure + " <" + scoreOntologyURI + "#hasTime> " + time + " . \n");					
 
 				} else {
 

@@ -1,0 +1,15 @@
+
+
+SELECT ?type (COUNT(?type) AS ?counter) WHERE {
+	
+	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
+
+		<http://musik.uni-muenster.de/scores/a44c418f-6bf8-4ce3-8c4b-fc1a0f5171c2> <http://linkeddata.uni-muenster.de/ontology/musicscore#hasScorePart> ?part.
+                ?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
+                ?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm .
+                ?rhythm a ?type
+                FILTER (!isBlank(?type))
+	}
+} 
+GROUP BY ?type
+ORDER BY DESC(?counter)
