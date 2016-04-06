@@ -24,6 +24,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import de.muenster.musikhochschule.core.Articulation;
 import de.muenster.musikhochschule.core.Beam;
+import de.muenster.musikhochschule.core.Clef;
 import de.muenster.musikhochschule.core.Creator;
 import de.muenster.musikhochschule.core.Dynamic;
 import de.muenster.musikhochschule.core.Identification;
@@ -710,10 +711,10 @@ public class MusicXMLParser {
 			builder.setEntityResolver(new EntityResolver() {
 
 				@Override
-				public InputSource resolveEntity(String publicId, String systemId)
-						throws SAXException, IOException {
-					//System.out.println("Ignoring " + publicId + ", " + systemId);
+				public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+
 					return new InputSource(new StringReader(""));
+					
 				}
 			});
 
@@ -805,7 +806,6 @@ public class MusicXMLParser {
 						Element elementNotes = (Element) nodePartName.item(0);
 						part.setName(elementNotes.getElementsByTagName("part-name").item(0).getTextContent());
 
-
 					}
 
 					score.getParts().add(part);
@@ -834,6 +834,8 @@ public class MusicXMLParser {
 					 * Loading measure data
 					 */
 
+					Clef clef = new Clef();
+					
 					for (int j = 0; j < nodesMeasuresIDs.getLength(); j++) {
 
 						Measure measure = new Measure();
@@ -857,10 +859,27 @@ public class MusicXMLParser {
 						if(nodesMeasuresBeatType.getLength()!=0) measure.getTime().setBeatType(Integer.parseInt(nodesMeasuresBeatType.item(0).getTextContent()));
 
 						NodeList nodesMeasuresClef = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+measure.getId()+"']/attributes/clef/sign", document,XPathConstants.NODESET);
-						if(nodesMeasuresClef.getLength()!=0) measure.getClef().setSign(nodesMeasuresClef.item(0).getTextContent());
+						
+						if(nodesMeasuresClef.getLength()!=0) {
+							
+							measure.getClef().setSign(nodesMeasuresClef.item(0).getTextContent());
+							clef.setSign(nodesMeasuresClef.item(0).getTextContent());
+						} else {
+							
+							measure.getClef().setSign(clef.getSign());
+							
+						}
 
-						NodeList nodesMeasuresClefLine = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+measure.getId()+"']/attributes/clef/line", document,XPathConstants.NODESET);
-						if(nodesMeasuresClefLine.getLength()!=0) measure.getClef().setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
+						NodeList nodesMeasuresClefLine = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+measure.getId()+"']/attributes/clef/line", document,XPathConstants.NODESET);						
+						if(nodesMeasuresClefLine.getLength()!=0) {
+							
+							measure.getClef().setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
+							clef.setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
+						} else {
+							
+							measure.getClef().setLine(clef.getLine());
+							
+						}
 
 
 						/**
