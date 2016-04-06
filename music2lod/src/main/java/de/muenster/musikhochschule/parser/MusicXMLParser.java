@@ -31,7 +31,6 @@ import de.muenster.musikhochschule.core.Measure;
 import de.muenster.musikhochschule.core.Note;
 import de.muenster.musikhochschule.core.Part;
 import de.muenster.musikhochschule.core.Score;
-import de.muenster.musikhochschule.core.Slur;
 
 public class MusicXMLParser {
 
@@ -230,7 +229,7 @@ public class MusicXMLParser {
 
 					}
 
-					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==2 || score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("C")){
+					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==2 && score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("C")){
 
 						clefType = "<" + scoreOntologyURI + "#MezzoSoprano>";
 
@@ -254,7 +253,7 @@ public class MusicXMLParser {
 
 					}
 
-					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==4 && score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("G")){
+					if (score.getParts().get(i).getMeasures().get(j).getClef().getLine()==2 && score.getParts().get(i).getMeasures().get(j).getClef().getSign().equals("G")){
 
 						clefType = "<" + scoreOntologyURI + "#Trebble>";
 
@@ -1057,11 +1056,13 @@ public class MusicXMLParser {
 
 										for (int l = 0; l < elementNotes.getElementsByTagName("slur").getLength(); l++) {
 
+											/*
 											Slur slur = new Slur();
 											slur.setNumber(Integer.parseInt(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("number").getTextContent()));
 											slur.setType(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("type").getTextContent());
 
-											note.getNotation().getSlur().add(slur);
+											note.getNotation().getSlur().add(slur); 
+											*/
 
 										}
 

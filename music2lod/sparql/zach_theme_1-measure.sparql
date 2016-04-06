@@ -1,0 +1,40 @@
+
+
+SELECT ?score ?part ?measure WHERE {
+	
+	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
+
+		?score a <http://dbpedia.org/ontology/MusicalWork> .
+		?score <http://linkeddata.uni-muenster.de/ontology/musicscore#hasScorePart> ?part .
+		?part a <http://linkeddata.uni-muenster.de/ontology/musicscore#ScorePart> .
+		?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
+
+		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rythm0 .
+		?rythm0 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rythm0 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasSequence> "1"^^<http://www.w3.org/2001/XMLSchema#int> .
+		?rythm0 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note0 .
+		?note0 a <http://purl.org/NET/c4dm/keys.owl#G> .
+
+		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rythm1 .
+		?rythm1 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasSequence> "2"^^<http://www.w3.org/2001/XMLSchema#int> .
+		?rythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note1 .
+		?note1 a <http://purl.org/NET/c4dm/keys.owl#G> .
+
+		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rythm2 .
+		?rythm2 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasSequence> "3"^^<http://www.w3.org/2001/XMLSchema#int> .
+		?rythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note2 .
+		?note2 a <http://purl.org/NET/c4dm/keys.owl#G> .
+
+		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rythm3 .
+		?rythm3 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasSequence> "4"^^<http://www.w3.org/2001/XMLSchema#int> .
+		?rythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note3 .
+		?note3 a <http://purl.org/NET/c4dm/keys.owl#G> .
+
+		
+
+	}
+
+}
