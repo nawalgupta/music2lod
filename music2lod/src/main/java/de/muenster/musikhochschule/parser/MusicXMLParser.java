@@ -57,6 +57,7 @@ public class MusicXMLParser {
 
 		String scoreOntologyURI = "http://linkeddata.uni-muenster.de/ontology/musicscore";		
 		String scoreOntologySequence = " <" + scoreOntologyURI + "#hasSequence> ";
+		String scoreOntologyNextRhythm = " <" + scoreOntologyURI + "#nextRhythm> ";
 
 		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
 
@@ -374,11 +375,9 @@ public class MusicXMLParser {
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
-
-
-					//ttl.append(rhythmic + scoreOntologySequence + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
-					ttl.append(measure + " <" + scoreOntologyURI + "#hasRhythm> " + rhythmic + " . \n");
-
+				
+					ttl.append(measure + " <" + scoreOntologyURI + "#hasRhythm> " + rhythmic + " . \n");					
+					
 					String rhythmicNote = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + (k+1) + ">";
 					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
 					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
@@ -459,6 +458,12 @@ public class MusicXMLParser {
 
 					
 					ttl.append(rhythmic + scoreOntologySequence + "\""+rhythmicSequence+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
+					
+					if(rhythmicSequence > 1){
+						
+						ttl.append("<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k) + "> " + scoreOntologyNextRhythm + rhythmic + " . \n");
+						
+					}
 					
 					/**
 					 * Dynamic (loudness): p,pp,ppp,pppp,f,ff,fff,ffff,sfz,mf
