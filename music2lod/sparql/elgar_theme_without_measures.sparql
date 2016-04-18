@@ -1,0 +1,58 @@
+SELECT ?measure WHERE {
+	
+	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
+
+ 		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm1 .
+
+		?rhythm1 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rhythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note1 .
+		?note1 a <http://purl.org/NET/c4dm/keys.owl#F> .
+                ?rhythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm2.  
+
+		?rhythm2 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note2 .
+		?note2 a <http://purl.org/NET/c4dm/keys.owl#G> .
+                ?rhythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm3.  
+
+		?rhythm3 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rhythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note3 .
+		?note3 a <http://purl.org/NET/c4dm/keys.owl#F> .
+                ?rhythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm4.
+  
+		?rhythm4 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note4 .
+                ?note4 a <http://purl.org/NET/c4dm/keys.owl#A> .
+                ?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm5.
+
+		?rhythm5 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rhythm5 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note5 .
+		?note5 a <http://purl.org/NET/c4dm/keys.owl#B> .
+                ?rhythm5 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm6.
+
+		?rhythm6 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm6 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note6 .
+		?note6 a <http://purl.org/NET/c4dm/keys.owl#A> .
+                ?rhythm6 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm7.
+
+		?rhythm7 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rhythm7 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note7 .
+		?note7 a <http://purl.org/NET/c4dm/keys.owl#G> .
+                ?rhythm7 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm8.
+
+		?rhythm8 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm8 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note8 .
+		?note8 a <http://purl.org/NET/c4dm/keys.owl#E> .
+                ?rhythm8 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm9.
+
+		?rhythm9 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
+		?rhythm9 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note9 .
+		?note9 a <http://purl.org/NET/c4dm/keys.owl#D> .
+                ?rhythm9 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm10.
+
+		?rhythm10 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm10 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note10 .
+		?note10 a <http://purl.org/NET/c4dm/keys.owl#E> .
+
+	}
+
+}

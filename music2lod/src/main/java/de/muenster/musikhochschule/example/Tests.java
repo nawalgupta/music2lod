@@ -6,7 +6,6 @@ import de.muenster.musikhochschule.parser.MusicXMLParser;
 
 public class Tests {
 
-
 	public static void main(String[] args) {
 
 		MusicXMLParser parser = new MusicXMLParser();

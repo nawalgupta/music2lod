@@ -65,6 +65,7 @@ public class MusicXMLParser {
 		StringBuffer ttl = new StringBuffer();		
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
 
+		int rhythmicSequence = 0;
 		int loudnessCounter = 0;
 
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
@@ -364,11 +365,13 @@ public class MusicXMLParser {
 
 				int chordAnchor = 0;
 				String chordAnchorObj="";
-				int rhythmicSequence = 0;
+				
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
 
-					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k+1) + ">";
+					//String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k+1) + ">";
+					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + (rhythmicSequence+1)  + ">";
+					
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
 
 
@@ -461,7 +464,14 @@ public class MusicXMLParser {
 					
 					if(rhythmicSequence > 1){
 						
-						ttl.append("<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k) + "> " + scoreOntologyNextRhythm + rhythmic + " . \n");
+						//String previousRhythm = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k) + "> "; 
+						String previousRhythm = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + (rhythmicSequence-1) + "> ";
+						
+						
+						System.out.println(previousRhythm + " next " + rhythmic);
+						
+						ttl.append( previousRhythm + scoreOntologyNextRhythm + rhythmic + " . \n");
+						
 						
 					}
 					
