@@ -468,7 +468,7 @@ public class MusicXMLParser {
 						String previousRhythm = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + (rhythmicSequence-1) + "> ";
 						
 						
-						System.out.println(previousRhythm + " next " + rhythmic);
+						//System.out.println(previousRhythm + " next " + rhythmic);
 						
 						ttl.append( previousRhythm + scoreOntologyNextRhythm + rhythmic + " . \n");
 						
