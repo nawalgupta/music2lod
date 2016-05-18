@@ -1,0 +1,39 @@
+
+
+
+SELECT DISTINCT ?partID ?partLabel ?measure WHERE {
+	
+	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
+
+		?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
+		?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .
+		?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .
+ 		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm1 .
+
+		?rhythm1 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm2.  
+
+		?rhythm2 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Sixteenth> .
+		?rhythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm3.  
+
+		?rhythm3 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+ 		?rhythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm4.
+  
+		?rhythm4 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Sixteenth> .
+		?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm5.
+
+		?rhythm5 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm5 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm6.
+
+		?rhythm6 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Sixteenth> .
+		?rhythm6 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm7.
+
+		?rhythm7 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .
+		?rhythm7 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm8.
+
+		?rhythm8 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Sixteenth> .
+		?rhythm8 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note8 .
+
+	}
+
+}

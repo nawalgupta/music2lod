@@ -1,0 +1,34 @@
+
+
+SELECT ?partID ?partLabel ?measure WHERE {
+	
+	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
+
+    	?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
+ 		?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .
+		?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .
+
+    	?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm1 .
+        		
+		?rhythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note1 .
+		?note1 a <http://purl.org/NET/c4dm/keys.owl#A> .
+    	?rhythm1 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm2.  
+		
+		?rhythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note2 .
+		?note2 a <http://purl.org/NET/c4dm/keys.owl#D> .
+    	?rhythm2 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm3.  
+
+		?rhythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note3 .
+		?note3 a <http://purl.org/NET/c4dm/keys.owl#C> .
+    	?rhythm3 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm4.
+  
+		?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note4 .
+    	?note4 a <http://purl.org/NET/c4dm/keys.owl#A> .
+    	?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm5.
+
+		?rhythm5 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note5 .
+		?note5 a <http://purl.org/NET/c4dm/keys.owl#G> .
+
+	}
+
+}
