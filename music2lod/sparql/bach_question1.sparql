@@ -1,13 +1,17 @@
 
 
-
-SELECT DISTINCT ?partID ?partLabel ?measure WHERE {
+SELECT DISTINCT ?score ?title ?part ?partID ?partLabel ?measure WHERE {
 	
 	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
-
+ 
+ 		?score a <http://dbpedia.org/ontology/MusicalWork> .
+ 		?score <http://purl.org/dc/terms/title>  ?title .  	
+ 		?score <http://linkeddata.uni-muenster.de/ontology/musicscore#hasScorePart> ?part .  	
+		?part a <http://linkeddata.uni-muenster.de/ontology/musicscore#ScorePart> . 
+		OPTIONAL{?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .}
+		OPTIONAL{?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .}
 		?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
-		?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .
-		?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .
+		
  		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm1 .
 
 		?rhythm1 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Eighth> .

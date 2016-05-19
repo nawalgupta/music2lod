@@ -1,12 +1,16 @@
 
 
-SELECT ?part ?measure WHERE {
+SELECT ?score ?title ?part ?partID ?partLabel ?measure WHERE {
 	
 	GRAPH <http://ulb.uni-muenster.de/context/music/scores> {
 
+ 		?score a <http://dbpedia.org/ontology/MusicalWork> .
+ 		?score <http://purl.org/dc/terms/title>  ?title .  	
+ 		?score <http://linkeddata.uni-muenster.de/ontology/musicscore#hasScorePart> ?part .  	
+		?part a <http://linkeddata.uni-muenster.de/ontology/musicscore#ScorePart> . 
+		OPTIONAL{?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .}
+		OPTIONAL{?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .}
 		?part <http://linkeddata.uni-muenster.de/ontology/musicscore#hasMeasure> ?measure .
- 		#?part <http://www.w3.org/1999/02/22-rdf-syntax-ns#ID> ?partID .
-		#?part <http://www.w3.org/2000/01/rdf-schema#label> ?partLabel .
 
  		?measure <http://linkeddata.uni-muenster.de/ontology/musicscore#hasRhythm> ?rhythm1 .
 
@@ -28,7 +32,7 @@ SELECT ?part ?measure WHERE {
 		?rhythm4 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Half> .
 		?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note4 .
 		?note4 a <http://purl.org/NET/c4dm/keys.owl#D> .
-    	?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm5.
+		?rhythm4 <http://linkeddata.uni-muenster.de/ontology/musicscore#nextRhythm> ?rhythm5.
 
 		?rhythm5 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Half> .
 		?rhythm5 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note5 .
@@ -43,7 +47,6 @@ SELECT ?part ?measure WHERE {
 		?rhythm7 a <http://linkeddata.uni-muenster.de/ontology/musicscore#Quarter> .
 		?rhythm7 <http://linkeddata.uni-muenster.de/ontology/musicscore#hasNote> ?note7 .
 		?note7 a <http://purl.org/NET/c4dm/keys.owl#E> .
-
 
 	}
 

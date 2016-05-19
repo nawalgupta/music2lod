@@ -69,7 +69,26 @@ public class MusicXMLParser {
 		int loudnessCounter = 0;
 
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
-		ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+		
+		if(score.getIdentification().getWorkTitle()!=null && score.getIdentification().getWorkNumber()==null ){
+			
+			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+		
+		} else if (score.getIdentification().getWorkTitle()!=null && score.getIdentification().getWorkNumber()!=null ){
+
+			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+
+		} else if (score.getIdentification().getWorkTitle()==null && score.getIdentification().getWorkNumber()!=null ){
+
+			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+
+		} else if (score.getIdentification().getWorkTitle()==null && score.getIdentification().getWorkNumber()==null ){
+
+			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"NO TITLE\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
+
+		}
+
+		
 
 		for (int i = 0; i < score.getIdentification().getCreators().size(); i++) {
 
