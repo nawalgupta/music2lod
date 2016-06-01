@@ -19,7 +19,7 @@ public class Tests {
 //		parser.exportAsNTriples();
 
 		
-		File[] files = new File("scores/xmlsamples/").listFiles();
+		File[] files = new File("scores/tests/").listFiles();
 		
 		for (File file : files) {
 

@@ -1,0 +1,43 @@
+prefix dct:<http://purl.org/dc/terms/>
+prefix mso:<http://linkeddata.uni-muenster.de/ontology/musicscore#>
+prefix key:<http://purl.org/NET/c4dm/keys.owl#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd:<http://www.w3.org/2001/XMLSchema#> 
+
+SELECT ?score ?part ?partID ?partLabel ?measure WHERE {
+ ?score dct:title "Die Kunst der Fuge"^^xsd:string . 	
+ ?score mso:hasScorePart ?part .  	
+ ?part a mso:ScorePart . 
+ OPTIONAL{?part rdf:ID ?partID .}
+ OPTIONAL{?part rdfs:label ?partLabel .}
+ ?part mso:hasMeasure ?measure .
+ ?measure mso:hasRhythm ?rhythm1 .
+ ?rhythm1 a mso:Half .
+ ?rhythm1 mso:hasNote ?note1 .
+ ?note1 a key:D .
+ ?rhythm1 mso:nextRhythm ?rhythm2.  
+ ?rhythm2 a mso:Half .
+ ?rhythm2 mso:hasNote ?note2 .
+ ?note2 a key:A .
+ ?rhythm2 mso:nextRhythm ?rhythm3.  
+ ?rhythm3 a mso:Half .
+ ?rhythm3 mso:hasNote ?note3 .
+ ?note3 a key:F .
+ ?rhythm3 mso:nextRhythm ?rhythm4.  
+ ?rhythm4 a mso:Half .
+ ?rhythm4 mso:hasNote ?note4 .
+ ?note4 a key:D .
+ ?rhythm4 mso:nextRhythm ?rhythm5.
+ ?rhythm5 a mso:Half .
+ ?rhythm5 mso:hasNote ?note5 .
+ ?note5 a key:CSharp .
+ ?rhythm5 mso:nextRhythm ?rhythm6.
+ ?rhythm6 a mso:Quarter .
+ ?rhythm6 mso:hasNote ?note6 .
+ ?note6 a key:D .
+ ?rhythm6 mso:nextRhythm ?rhythm7.
+ ?rhythm7 a mso:Quarter .
+ ?rhythm7 mso:hasNote ?note7 .
+ ?note7 a key:E .
+}
