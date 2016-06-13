@@ -65,15 +65,16 @@ public class MusicXMLParser {
 		StringBuffer ttl = new StringBuffer();		
 		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
 
-		int rhythmicSequence = 0;
+		int rhythmicSequence = 1;
 		int loudnessCounter = 0;
+		boolean firstRhythmic = true;
 
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
-		
+
 		if(score.getIdentification().getWorkTitle()!=null && score.getIdentification().getWorkNumber()==null ){
-			
+
 			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
-		
+
 		} else if (score.getIdentification().getWorkTitle()!=null && score.getIdentification().getWorkNumber()!=null ){
 
 			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + " | " + score.getIdentification().getWorkNumber() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
@@ -88,7 +89,7 @@ public class MusicXMLParser {
 
 		}
 
-		
+
 
 		for (int i = 0; i < score.getIdentification().getCreators().size(); i++) {
 
@@ -139,11 +140,11 @@ public class MusicXMLParser {
 
 
 				if(j > 0) {
-					
+
 					String previousMeasure = "<http://musik.uni-muenster.de/node/" + scoreID.toString() + "/MEASURE_" + score.getParts().get(i).getId() + "_" + score.getParts().get(i).getMeasures().get(j-1).getId() + ">";
-					
+
 					ttl.append(previousMeasure + " <" + scoreOntologyURI + "#nextMeasure> " + measure + ". \n");
-					
+
 				}
 
 
@@ -325,7 +326,7 @@ public class MusicXMLParser {
 
 				if(score.getParts().get(i).getMeasures().get(j).getKey().getMode()!=null){
 
-					key = "<http://musik.uni-muenster.de/node/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
+					key = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/KEY_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId()+">";
 					ttl.append(measure + " <" + scoreOntologyURI + "#hasKey> " + key + ". \n");
 
 					if(score.getParts().get(i).getMeasures().get(j).getKey().getMode().equals("major")){
@@ -385,21 +386,48 @@ public class MusicXMLParser {
 				int chordAnchor = 0;
 				String chordAnchorObj="";
 				
+//				/String chord = "";
 
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
 
 					//String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k+1) + ">";
-					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + (rhythmicSequence+1)  + ">";
+
+//					if(j == 0 && k ==0 ){
+//						
+//						firstRhythmic=true;
+//						
+//					} else {
+//						
+//						firstRhythmic=false;
+//					}
+						
+					if(!score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).isChord()){
+						
+						chordAnchor = k;
+						
+						/**
+						 * Counter ignoring the very first rhythm on the score.
+						 */
+						if(j != 0 || k !=0 ) {
+														
+							rhythmicSequence++;
+							
+						}
+						
+					} 
 					
+					String rhythmic = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + rhythmicSequence  + ">";
+
 					String rhythmicType = getCapital(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getType());
+					
 
 
 					int rhythmicVoice = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getVoice();
 					int rhythmicDuration = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDuration();
 					int rhythmicStaff = +score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getStaff();
-				
+
 					ttl.append(measure + " <" + scoreOntologyURI + "#hasRhythm> " + rhythmic + " . \n");					
-					
+
 					String rhythmicNote = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTE_" + partID + "_M" + measureID + "_N" + (k+1) + ">";
 					String staff = "<http://musik.uni-muenster.de/node/STAFF/" + scoreID + "_" + partID  +"_S"+ rhythmicStaff +">";
 					int noteOctave = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getOctave();
@@ -408,6 +436,7 @@ public class MusicXMLParser {
 					ttl.append(rhythmic + " <" + scoreOntologyURI + "#hasStaff> "+ staff+ " . \n");
 
 
+					
 					if(rhythmicType == null){
 
 						ttl.append(rhythmic + rdfTypeURI + " <" + scoreOntologyURI + "#Whole> . \n");
@@ -449,124 +478,146 @@ public class MusicXMLParser {
 							ttl.append(rhythmicNote +  rdfTypeURI + " <" + scoreOntologyURI + "#Rest> . \n");
 
 						}
+						
 					}
 
 
-
-					//TODO: correct triple redundancy (Chord type and anchor are being duplicated)  
-
-
-					String chord = "";
-
+					
+					String noteSet = "";
+										
 					if(!score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).isChord()){
 
 						chordAnchor = k;
 						chordAnchorObj = rhythmicNote;
-						
-						rhythmicSequence++;
-						
-						//ttl.append(rhythmic + scoreOntologySequence + "\""+k+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
-						
+											
+
 					} else {
 
-						chord = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/CHORD_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
-						ttl.append(chord + " <" + scoreOntologyURI + "#hasNote> " + rhythmicNote + " . \n" );
+						
+						noteSet = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/NOTESET_" +score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + chordAnchor+">"; 
+						ttl.append(noteSet + " <" + scoreOntologyURI + "#hasNote> " + rhythmicNote + " . \n" );
 
-						ttl.append(chord + " <" + scoreOntologyURI + "#hasNote> " + chordAnchorObj + " . \n");
-						ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#NoteSet> . \n");
+						ttl.append(noteSet + " <" + scoreOntologyURI + "#hasNote> " + chordAnchorObj + " . \n");
+
+
+						ttl.append(noteSet + rdfTypeURI + " <" + scoreOntologyURI + "#NoteSet> . \n");//xxx
+						
+//						if((k-chordAnchor==2)){
+//
+//							ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#Dyad> . \n");
+//
+//						} else if(k-chordAnchor==3){
+//
+//							//System.out.println("test chord -> measure -> " + measure + " - " + (k-chordAnchor));
+//							ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#Chord> . \n");
+//						} else if(k-chordAnchor==4){
+//
+//							ttl.append(chord + rdfTypeURI + " <" + scoreOntologyURI + "#Tetrad> . \n");
+//
+//						}
 						
 						
 					}
+				
 
+						
 					
 					ttl.append(rhythmic + scoreOntologySequence + "\""+rhythmicSequence+"\"^^<http://www.w3.org/2001/XMLSchema#int> . \n");
-					
+
 					if(rhythmicSequence > 1){
-						
-						//String previousRhythm = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + score.getParts().get(i).getId() + "_M" + score.getParts().get(i).getMeasures().get(j).getId() + "_" + (k) + "> "; 
+
 						String previousRhythm = "<http://musik.uni-muenster.de/node/"+scoreID.toString()+"/RHYTHMIC_" + (rhythmicSequence-1) + "> ";
-						
-						
-						//System.out.println(previousRhythm + " next " + rhythmic);
-						
 						ttl.append( previousRhythm + scoreOntologyNextRhythm + rhythmic + " . \n");
-						
-						
+
 					}
-					
+
 					/**
 					 * Dynamic (loudness): p,pp,ppp,pppp,f,ff,fff,ffff,sfz,mf
 					 */
-					
+
 					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().size(); l++) {
-					
+
 						loudnessCounter++;
-						
+
 						if(score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().get(l).getType()!=null){
-							
+
 							String loudnessType = score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getDynamic().get(l).getType();
-							
+
 							String loudness = "<http://musik.uni-muenster.de/node/DYNAMIC_LOUDNESS_"+ loudnessType + "_" + loudnessCounter + ">";	
-							
+
 							ttl.append(rhythmic + "<" + scoreOntologyURI + "#hasDynamic> " + loudness + " .\n");
 							ttl.append(loudness + rdfTypeURI + " <" + scoreOntologyURI + "#" + loudnessType + "> . \n");
-							
+
 						}
-						
-					}
-
-
-					
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					/**
-					 * TBC
-					 */
-
-					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getBeam().size(); l++) {
-
-						/*						
-						System.out.println("------Note "+ (k+1) +" Beam Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getNumber());
-						System.out.println("------Note "+ (k+1) +" Beam Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getType());
-						 */
-					}
-					/*
-					System.out.println("------Note "+ (k+1) +" Syllabic: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getSyllabic());
-					System.out.println("------Note "+ (k+1) +" Text: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getText());
-					 */					
-					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getNotation().getSlur().size(); l++) {
-						/*
-						System.out.println("------Note "+ (k+1) +" Slur Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getNumber());
-						System.out.println("------Note "+ (k+1) +" Slur Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getType());
-						 */
-					}
-
-					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getNotation().getArticulation().size(); l++) {
-
-						//System.out.println("------Note "+ (k+1) +" Articulation Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getArticulation().get(l).getType());					
 
 					}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					//
+					//					/**
+					//					 * TBC
+					//					 */
+					//
+					//					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getBeam().size(); l++) {
+					//
+					//						/*						
+					//						System.out.println("------Note "+ (k+1) +" Beam Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getNumber());
+					//						System.out.println("------Note "+ (k+1) +" Beam Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getBeam().get(l).getType());
+					//						 */
+					//					}
+					//					/*
+					//					System.out.println("------Note "+ (k+1) +" Syllabic: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getSyllabic());
+					//					System.out.println("------Note "+ (k+1) +" Text: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getLyric().getText());
+					//					 */					
+					//					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getNotation().getSlur().size(); l++) {
+					//						/*
+					//						System.out.println("------Note "+ (k+1) +" Slur Number: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getNumber());
+					//						System.out.println("------Note "+ (k+1) +" Slur Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getSlur().get(l).getType());
+					//						 */
+					//					}
+					//
+					//					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getNotation().getArticulation().size(); l++) {
+					//
+					//						//System.out.println("------Note "+ (k+1) +" Articulation Type: " + score.getParts().get(i).getMeasures().get(j).getNotes().get(k).getNotation().getArticulation().get(l).getType());					
+					//
+					//					}
 
 				}
 
 			}
 
 		}
+
+		//		for (int i = 0; i < score.getParts().size(); i++) {
+		//			
+		//			for (int j = 0; j < score.getParts().get(i).getMeasures().size(); j++) {
+		//				
+		//				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
+		//				
+		//					for (int l = 0; l < score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().; k++) {
+		//					
+		//				}
+		//				
+		//			}
+		//			
+		//		}
 
 
 		if(verbose) System.out.println(ttl.toString());
@@ -638,10 +689,9 @@ public class MusicXMLParser {
 					System.out.println("----Time Beat-Type: " + score.getParts().get(i).getMeasures().get(j).getTime().getBeatType());
 
 
-
-
 				}
 
+				
 				for (int k = 0; k < score.getParts().get(i).getMeasures().get(j).getRhythmic().size(); k++) {
 
 					System.out.println("------Note "+ (k+1) +" Pitch (Step): " + score.getParts().get(i).getMeasures().get(j).getRhythmic().get(k).getPitch().getStep());
@@ -705,7 +755,9 @@ public class MusicXMLParser {
 
 			int index = this.getInputFile().getName().lastIndexOf('.');
 			if (index != -1) {
+				
 				fileName = this.getInputFile().getName().substring(0, index);
+				
 			} else {
 
 				fileName = this.getInputFile().getName();
@@ -748,7 +800,7 @@ public class MusicXMLParser {
 				public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 
 					return new InputSource(new StringReader(""));
-					
+
 				}
 			});
 
@@ -869,7 +921,7 @@ public class MusicXMLParser {
 					 */
 
 					Clef clef = new Clef();
-					
+
 					for (int j = 0; j < nodesMeasuresIDs.getLength(); j++) {
 
 						Measure measure = new Measure();
@@ -893,26 +945,28 @@ public class MusicXMLParser {
 						if(nodesMeasuresBeatType.getLength()!=0) measure.getTime().setBeatType(Integer.parseInt(nodesMeasuresBeatType.item(0).getTextContent()));
 
 						NodeList nodesMeasuresClef = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+measure.getId()+"']/attributes/clef/sign", document,XPathConstants.NODESET);
-						
+
 						if(nodesMeasuresClef.getLength()!=0) {
-							
+
 							measure.getClef().setSign(nodesMeasuresClef.item(0).getTextContent());
 							clef.setSign(nodesMeasuresClef.item(0).getTextContent());
+							
 						} else {
-							
+
 							measure.getClef().setSign(clef.getSign());
-							
+
 						}
 
 						NodeList nodesMeasuresClefLine = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+measure.getId()+"']/attributes/clef/line", document,XPathConstants.NODESET);						
 						if(nodesMeasuresClefLine.getLength()!=0) {
-							
+
 							measure.getClef().setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
 							clef.setLine(Integer.parseInt(nodesMeasuresClefLine.item(0).getTextContent()));
+							
 						} else {
-							
+
 							measure.getClef().setLine(clef.getLine());
-							
+
 						}
 
 
@@ -1115,7 +1169,7 @@ public class MusicXMLParser {
 											slur.setType(elementNotes.getElementsByTagName("slur").item(l).getAttributes().getNamedItem("type").getTextContent());
 
 											note.getNotation().getSlur().add(slur); 
-											*/
+											 */
 
 										}
 
@@ -1308,23 +1362,23 @@ public class MusicXMLParser {
 
 							}
 
-							
+
 						}
 
 
 
 						int lastNote = 0;
-						
+
 						for (int k = 0; k < nodeListMeasureElements.item(0).getChildNodes().getLength(); k++) {
 
 							if(nodeListMeasureElements.item(0).getChildNodes().item(k).getNodeName().equals("direction")){
-						
+
 
 								//System.out.println("Measure: "+score.getParts().get(i).getMeasures().get(j).getId() +" Note: " + lastNote + "/"+ score.getParts().get(i).getMeasures().get(j).getRhythmic().size()+ " contains direction");
-																
+
 								Element elementDynamic = (Element) nodeListMeasureElements.item(0).getChildNodes().item(k);
 								Dynamic dynamic = new Dynamic();
-								
+
 								if(elementDynamic.getElementsByTagName("p").item(0) !=null) dynamic.setType("p");
 								if(elementDynamic.getElementsByTagName("pp").item(0) !=null) dynamic.setType("pp");
 								if(elementDynamic.getElementsByTagName("ppp").item(0) !=null) dynamic.setType("ppp");
@@ -1336,159 +1390,27 @@ public class MusicXMLParser {
 								if(elementDynamic.getElementsByTagName("sfz").item(0) !=null) dynamic.setType("sfz");
 								if(elementDynamic.getElementsByTagName("mf").item(0) !=null) dynamic.setType("mf");
 								if(elementDynamic.getElementsByTagName("mp").item(0) !=null) dynamic.setType("mp");
-								
+
 								score.getParts().get(i).getMeasures().get(j).getRhythmic().get(lastNote).getDynamic().add(dynamic);
-								
+
 							}
 
 							if(nodeListMeasureElements.item(0).getChildNodes().item(k).getNodeName().equals("note")){
-										
+
 								if(lastNote < score.getParts().get(i).getMeasures().get(j).getRhythmic().size()-1) {
-									
+
 									lastNote++;
-									
-								}
-								
-							}
-
-						}
-
-
-/*
-
-
-						NodeList nodesMeasuresDirections = (NodeList) xpath.evaluate("//score-partwise/part[@id='"+score.getParts().get(i).getId()+"']/measure[@number='"+score.getParts().get(i).getMeasures().get(j).getId()+"']/direction", document,XPathConstants.NODESET);
-
-
-						for (int l = 0; l < nodesMeasuresDirections.getLength(); l++) {
-
-
-							Direction directions = new Direction();							
-
-							Word word = new Word();
-							Dynamic dynamic = new Dynamic();
-
-							Element elementDirections = (Element) nodesMeasuresDirections.item(l);
-
-							if(elementDirections.getElementsByTagName("p").item(0) !=null){
-
-								dynamic.setType("p");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("pp").item(0) !=null){
-
-								dynamic.setType("pp");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("ppp").item(0) !=null){
-
-								dynamic.setType("ppp");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("pppp").item(0) !=null){
-
-								dynamic.setType("pppp");
-								directions.setDynamic(dynamic);
-
-							}
-
-
-							if(elementDirections.getElementsByTagName("f").item(0) !=null){
-
-
-								dynamic.setType("f");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("ff").item(0) !=null){
-
-								dynamic.setType("ff");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("fff").item(0) !=null){
-
-								dynamic.setType("fff");
-								directions.setDynamic(dynamic);
-
-							}
-
-							if(elementDirections.getElementsByTagName("ffff").item(0) !=null){
-
-								dynamic.setType("ffff");
-								directions.setDynamic(dynamic);
-
-							}
-
-
-							if(elementDirections.getElementsByTagName("words").item(0)!=null){
-
-								word.setWordText(elementDirections.getElementsByTagName("words").item(0).getTextContent());
-								directions.setWord(word);							
-
-							}
-
-
-							if(elementDirections.getElementsByTagName("staff").item(0) !=null){
-
-								directions.setStaff(Integer.parseInt(elementDirections.getElementsByTagName("staff").item(0).getTextContent()));
-
-							}
-
-
-							if(elementDirections.getElementsByTagName("wedge").item(0) !=null){
-
-								Wedge wedge = new Wedge();
-								wedge.setType(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("type").getTextContent());
-
-								if(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("spread")!=null){
-
-									wedge.setSpread(Integer.parseInt(elementDirections.getElementsByTagName("wedge").item(0).getAttributes().getNamedItem("spread").getTextContent()));
 
 								}
 
-								directions.setWedge(wedge);
-
 							}
 
-							//score.getParts().get(i).getMeasures().get(j).getDirection().add(directions);
-
 						}
-
-
-						*/
-
-
-
-
 
 					}	
-
-
-
-
-
-
-
-
-
 				}
 
-
 			}
-
-			/**
-			 * Loading measures attributes
-			 */
-
 
 
 		} catch (MalformedURLException ex) {                   

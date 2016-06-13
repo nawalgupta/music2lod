@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise>
+  <work>
+  <work-title>Cello Concerto Op. 85</work-title>
+ </work>
   <identification>
     <creator type="composer">Sir Edward Elgar</creator>
     <encoding>
