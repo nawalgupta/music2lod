@@ -1,0 +1,20 @@
+prefix dct:<http://purl.org/dc/terms/>
+prefix mso:<http://linkeddata.uni-muenster.de/ontology/musicscore#>
+prefix key:<http://purl.org/NET/c4dm/keys.owl#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd:<http://www.w3.org/2001/XMLSchema#> 
+
+SELECT ?score ?measure (COUNT(?note) AS ?chord_size) WHERE { 
+	?chord a mso:NoteSet .
+	?chord mso:hasNote ?note .
+	?rhythm a mso:Rhythm .
+	?rhythm mso:hasNote ?note .
+	?measure mso:hasRhythm ?rhythm .
+	?measure a mso:Measure .
+	?part mso:hasMeasure ?measure .
+	?part a mso:ScorePart .
+	?score mso:hasScorePart ?part .
+}
+GROUP BY ?score ?measure ?chord 
+HAVING (?chord_size = 4)
