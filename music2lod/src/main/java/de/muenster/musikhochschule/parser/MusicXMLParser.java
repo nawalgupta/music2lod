@@ -60,17 +60,29 @@ public class MusicXMLParser {
 		String scoreOntologyNextRhythm = " <" + scoreOntologyURI + "#nextRhythm> ";
 
 		System.out.println("Generating N-Triples for [" + this.getInputFile().getName() + "] ...");
-
-		UUID scoreID = UUID.randomUUID();
+		
+		String scoreID = "";
+		
+		if (this.getInputFile().getName().contains("@")) {
+		
+			scoreID = this.getInputFile().getName().split("@")[0];
+			
+		} else {
+			
+			scoreID = UUID.randomUUID().toString();
+			
+		}
+		
+		//UUID scoreID = UUID.randomUUID();
 		StringBuffer ttl = new StringBuffer();		
-		String scoreSubject = "<http://musik.uni-muenster.de/scores/"+scoreID.toString()+">";
+		String scoreSubject = "<http://sammlungen.ulb.uni-muenster.de/id/"+scoreID.toString()+">";
 
 		int rhythmicSequence = 1;
 		int loudnessCounter = 0;
-		boolean firstRhythmic = true;
 
 		ttl.append(scoreSubject + rdfTypeURI + " <http://dbpedia.org/ontology/MusicalWork> .\n");
-
+		ttl.append(scoreSubject + rdfTypeURI + " <" + scoreOntologyURI + "#Score> . \n");
+		
 		if(score.getIdentification().getWorkTitle()!=null && score.getIdentification().getWorkNumber()==null ){
 
 			ttl.append(scoreSubject + " <http://purl.org/dc/terms/title> \"" + score.getIdentification().getWorkTitle() + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n");
